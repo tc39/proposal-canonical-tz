@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "proposal-temporal",
+  "name": "proposal-canonical-tz",
   "version": "1.0.0",
-  "description": "Provides standard objects and functions for working with dates and times.",
+  "description": "TC39 Proposal (stacked on Temporal) to improve handling of changes to the IANA Time Zone Database.",
   "engines": {
     "node": ">=12.16.0"
   },
@@ -39,9 +39,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tc39/proposal-temporal.git"
+    "url": "git+https://github.com/justingrant/proposal-canonical-tz.git"
   },
-  "author": "Ujjwal Sharma <usharma@igalia.com>",
+  "author": "Justin Grant <justingrant@users.noreply.github.com>",
   "license": "BSD-3-Clause",
   "prettier": {
     "printWidth": 120,
