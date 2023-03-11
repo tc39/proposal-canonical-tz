@@ -26,10 +26,19 @@ In the meantime, please ignore everything in this repo other than this README.
 
 ## Motivation
 
-### Implementations don't follow the spec... for good reason!
+### Variation between implementations + spec doesn't match web reality
 
 ```javascript
-// If you follow the spec and use TZDB's default build options
+Temporal.TimeZone.from('Asia/Kolkata');
+// => Asia/Kolkata (Firefox)
+// => Asia/Calcutta (Chrome, Safari, Node -- does not conform to ECMA-402)
+```
+
+### Vague spec text: _"in the IANA Time Zone Database"_
+
+```javascript
+// TZDB has build options and the spec is silent on which to pick.
+// Default build options, while conforming, are bad for users.
 Temporal.TimeZone.from('Atlantic/Reykyavik');
 // => Africa/Abidjan
 Temporal.TimeZone.from('Europe/Stockholm');
@@ -38,18 +47,23 @@ Temporal.TimeZone.from('Europe/Zagreb');
 // => Europe/Belgrade
 ```
 
-### Variation between implementations
+### User Complaints
 
-```javascript
-Temporal.TimeZone.from('Asia/Kolkata');
-// => Asia/Kolkata (Firefox)
-// => Asia/Calcutta (Chrome, Safari, Node)
-```
+- [CLDR-9892: 'Asia/Calcutta', 'Asia/Saigon' and 'Asia/Katmandu' are canonical even though they became obsolete in 1993](https://unicode-org.atlassian.net/browse/CLDR-9892)
+- [Chromium 580195: Asia/Calcutta Timezone Identifier should be replaced by Asia/Kolkata](https://bugs.chromium.org/p/chromium/issues/detail?id=580195)
+- [moment.tz.guess() in chrome is different from moment.tz.guess() in IE · Issue #453 · moment/moment-timezone ](https://github.com/moment/moment-timezone/issues/453)
+- [CLDR-5612: Timezones very outdated](https://unicode-org.atlassian.net/browse/CLDR-5612)
+- [CLDR-9718: Rename from Asia/Calcutta to Asia/Kolkata in Zone - Tzid mapping and windows mapping](https://unicode-org.atlassian.net/browse/CLDR-9718)
+- [Incorrect canonical time zone name for Asia/Kolkata · Issue #1076 · tc39/proposal-temporal](https://github.com/tc39/proposal-temporal/issues/1076)
+- [[tz] Kyiv not Kiev](https://mm.icann.org/pipermail/tz/2021-January/029695.html) (from [IANA TZDB mailing list](https://mm.icann.org/pipermail/tz/)).
+- It's easy to find dozens more.
 
-### Comparisons to static identifiers may break
+### Can't depend on static data behaving the same over time
 
 ```shell
 > npm test
+# result = someFunctionToTest('Asia/Calcutta');
+# assertEqual(result.timeZone.id, 'Asia/Calcutta');
 ✅
 > brew upgrade node
 > npm test
@@ -58,23 +72,22 @@ Expected: 'Asia/Calcutta'
 Actual: 'Asia/Kolkata'
 ```
 
-### Serialization of the same data varies over time
+### Comparing persisted identifiers with `===` is unreliable
 
 ```javascript
 userProfile.timeZoneId = Temporal.Now.timeZoneId();
 userProfile.save();
-// 1 year later (after Asia/Calcutta changed to Asia/Kolkata)
+// 1 year later (after canonicalization changed)
 userProfile.load();
 if (userProfile.timeZoneId !== Temporal.Now.timeZoneId()) {
   alert('You moved!');
 }
 ```
 
-### Temporal makes unexpected or updated canonicalization more disruptive
+### Temporal makes these problems more disruptive
 
 ```javascript
-// Today, canonicalization is invisible for most common use cases
-// (in part because of the aforementioned spec violations).
+// Today, canonicalization is invisible for most common use cases.
 // Intl.DateTimeFormat `format` localizes time zone names.
 // Only `resolvedOptions()` exposes the underlying IANA time zone.
 timestamp = '2023-03-10T12:00:00Z';
@@ -102,20 +115,6 @@ zdt.toString();
 // => '2023-03-10T17:30:00+05:30[Asia/Calcutta]' (Chrome, Safari, Node)
 ```
 
-### User Complaints
-
-Canonicalization of time zone identifiers has been a repeated pain point for many years.
-Here's a few examples.
-It's easy to find dozens more.
-
-- [CLDR-9892: 'Asia/Calcutta', 'Asia/Saigon' and 'Asia/Katmandu' are canonical even though they became obsolete in 1993](https://unicode-org.atlassian.net/browse/CLDR-9892)
-- [Incorrect canonical time zone name for Asia/Kolkata · Issue #1076 · tc39/proposal-temporal](https://github.com/tc39/proposal-temporal/issues/1076)
-- [CLDR-9718: Rename from Asia/Calcutta to Asia/Kolkata in Zone - Tzid mapping and windows mapping](https://unicode-org.atlassian.net/browse/CLDR-9718)
-- [CLDR-5612: Timezones very outdated](https://unicode-org.atlassian.net/browse/CLDR-5612)
-- [Chromium 580195: Asia/Calcutta Timezone Identifier should be replaced by Asia/Kolkata](https://bugs.chromium.org/p/chromium/issues/detail?id=580195)
-- [moment.tz.guess() in chrome is different from moment.tz.guess() in IE · Issue #453 · moment/moment-timezone ](https://github.com/moment/moment-timezone/issues/453)
-- And 100+ complaints like [this one](https://mm.icann.org/pipermail/tz/2022-September/031956.html) on the [IANA TZDB mailing list](https://mm.icann.org/pipermail/tz/).
-
 ## Definitions
 
 - **Identifier** - Time zone name in TZDB (and accepted in ECMAScript).
@@ -131,27 +130,22 @@ It's easy to find dozens more.
 - **CLDR Canonicalization** - Zone &amp; Link [data](https://github.com/unicode-org/cldr-json/blob/main/cldr-json/cldr-bcp47/bcp47/timezone.json) used by V8 & WebKit (via ICU libraries)
 - **IANA Canonicalization** - Zone &amp; Link [data](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) used by Firefox (in custom TZDB build)
 
-## Proposed Solution
+## Proposed Solution - Summary
 
-An initial draft plan for this proposal is described in the steps below.
-Although the items below are ranked in order of expected difficulty of implementation and/or achieving consensus, they aren't necessarily dependent on each other and could land out of order.
-Some steps are also "severable"; if they are blocked due to implementation complexity and/or lack of consensus, we can still move forward on the others.
+Steps below are designed to be "severable"; if blocked due to implementation complexity and/or lack of consensus, we can still move forward on the others.
 
-### Easier (web reality)
+### Reduce variation between implementations, and between implementations and spec
 
 1. **[Simplify abstract operations](#Editorial-cleanup-of-identifier-related-Abstract-Operations)** dealing with time zone identifiers. (editorial only)
 2. **[Align spec](#Align-spec-with-implementation-behavior)** to support how implementations actually behave.
-3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#Out-of-date-canonicalizations-in-V8WebKit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
-
-### Harder (normative spec changes)
-
+3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#Fix-out-of-date-canonicalizations-in-V8WebKit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
 4. [**Prescriptive spec text to reduce divergence between implementations.**](#Prescriptive-spec-text-to-reduce-divergence-between-implementations)
    This step requires finding common ground between implementers as well as TG2 (the ECMA-402 team) about how canonicalization should work.
 
-### Hardest (public API changes)
+### Reduce impact of canonicalization changes
 
-5. [**Make Link-traversing canonicalization optional and opt-in.**](#Make-Link-traversing-canonicalization-optional-and-opt-in)
-   If canonicalization changes don't affect existing code, it's much less likely for future canonicalization changes to break the Web.
+5. [**Avoid observable following of Links.**](#Defer-Link-traversing-canonicalization)
+   If canonicalization changes don't affect existing code, then it's much less likely for future canonicalization changes to break the Web.
    Because canonicalization is implementation-defined, this change may (or may not; needs research) be safe to ship after Temporal Stage 4, but best to not wait too long.
 
 ```javascript
@@ -161,14 +155,16 @@ Temporal.TimeZone.from('Asia/Calcutta');
 ```
 
 6. [**Add `TimeZone.prototype.equals`.**](#Add-TimeZoneprototypeequals)
-   Because (5) would stop canonicalizing IDs upon `TimeZone` object creation, it'd be helpful for developers to have an ergonomic way to check if two `TimeZone` objects represented the same Zone.
-   This could be deferred to a later proposal if needed.
+   Because (5) would stop canonicalizing IDs upon `TimeZone` object creation, it'd be helpful to have an ergonomic way to check if two `TimeZone` objects represented the same Zone.
+   This can be deferred to a later proposal if needed.
 
 ```javascript
 // More ergonomic canonical-equality testing
 Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 // => true
 ```
+
+## Proposed Solution - Details
 
 ## Editorial cleanup of identifier-related Abstract Operations
 
@@ -220,7 +216,7 @@ There's useful info in [@anba](https://github.com/anba)'s comments [here](https:
 
 Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers` (the only implementation-defined AO related to TZDB identifiers) and would be removed from their current home in `GetCanonicalTimeZoneName`.
 
-## Out-of-date canonicalizations in V8/WebKit
+## Fix out-of-date canonicalizations in V8/WebKit
 
 The list below shows 13 Links which have been superseded in IANA and Firefox, but still canonicalize to the "old" identifier in CLDR (and hence ICU and therefore V8 and WebKit).
 
@@ -255,7 +251,7 @@ Making progress here requires input from specifiers and implementers who underst
 Note that one acceptable outcome may be to “agree to disagree” as long as we can agree on most parts.
 We don’t need perfect alignment to reduce ecosystem variance.
 
-## Make Link-traversing canonicalization optional and opt-in
+## Defer Link-traversing canonicalization
 
 This normative change would defer Link traversal to enable a Link identifier to be stored in internal slots of `ZonedDateTime`, `TimeZone`, and perhaps `DateTimeFormat`, so that it can be returned back to the user.
 
