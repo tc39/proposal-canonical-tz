@@ -134,9 +134,8 @@ It's easy to find dozens more.
 ## Proposed Solution
 
 An initial draft plan for this proposal is described in the steps below.
-Although the items below are ranked in order of expected difficulty of implementation and/or achieving consensus, they aren't necessarily dependent on each other.
-In particular, if (5) and (6) are able to achieve TG2 and then TG1 consensus, then they are ECMAScript API changes (which require but may be much easier easy to implement while waiting for If some expected-easier ) The earlier items are more straightforward and will hopefully be faster to achieve consensus (and to implement).
-The later ones will require more work.
+Although the items below are ranked in order of expected difficulty of implementation and/or achieving consensus, they aren't necessarily dependent on each other and could land out of order.
+Some steps are also "severable"; if they are blocked due to implementation complexity and/or lack of consensus, we can still move forward on the others.
 
 ### Easier (web reality)
 
@@ -270,16 +269,16 @@ This change requires the following normative edits:
 
 - a) Change `GetCanonicalTimeZoneIdentifier` to `GetAvailableTimeZoneIdentifier` in places where user input identifiers are stored.
 - b) Add `GetCanonicalTimeZoneIdentifier` calls before using identifiers for any other purpose than returning them back to ECMAScript code in `id`, `timeZoneId`, `toString`, and `toJSON`.
-- c) Depending on what TG2 decides, maybe include `resolvedOptions().timeZone` to calls that are exempt from canonicalization. Or we could leave its existing behavior for backwards compatibility.
+- c) Depending on what TG2 decides, maybe include `resolvedOptions().timeZone` to calls that are exempt from canonicalization. Or we could leave its existing canonicalized behavior for backwards compatibility.
 
-An early proof-of-concept PR of these changes is here: https://github.com/tc39/proposal-temporal/pull/2516
+An early proof-of-concept PR of these changes is here: https://github.com/tc39/proposal-canonical-tz/pull/1
 
 A few performance-related notes:
 
 - Storing user-input identifier strings is not necessary because identifiers are case-normalized by `GetCanonicalTimeZoneIdentifier` before storing.
-  There are fewer than 600 identifiers, so storing built-in time zone identifiers as a 2-byte (or even 10-bit) enumeration is possible.
-- In the 2023-03-09 TG2 meeting, [@sffc](https://github.com/sffc) noted a concern that the changes above would require implementations to store two pieces of data for each `TimeZone` and `ZonedDateTime` instance: the original identifier and the canonical identifier.
-  Implementations could choose to do this, but they can also save a few bytes per object by canonicalizing just-in-time as needed via a cache or small lookup table (there are only 133 Links) in order to map Links to their corresponding Zones.
+  There are fewer than 600 identifiers, so built-in time zone identifiers could be stored as a 2-byte (or even 10-bit) indexes into a ~9KB array of ASCII strings.
+- This change WOULD NOT require storing both original and canonical IDs in each `TimeZone` and `ZonedDateTime` instance.
+  Implementations could choose to do this for ease of implementation, but they can also save a few bytes per object by canonicalizing just-in-time via a 2.3KB map of each identifier's index to its corresponding Zone's identifier's index.
 
 ## Add `TimeZone.prototype.equals`
 
@@ -318,8 +317,8 @@ Temporal.TimeZone.canonicalize('Asia/Calcutta');
 // => Asia/Kolkata
 ```
 
-Although it's reasonable to argue that exposing canonical identifiers has been a source of grief in every software platform.
-So it might not be a bad idea to add APIs that make canonicalization more visible because that would invite more user complaints.
+That said, exposing canonical identifiers has been a source of grief in every software platform.
+So adding APIs that make canonicalization more visible might invite more user complaints.
 This is another good reason to defer these kinds of APIs until a later proposal. :smile:
 
 ## TZDB size calculations
