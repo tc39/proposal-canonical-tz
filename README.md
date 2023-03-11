@@ -21,7 +21,7 @@ In the meantime, please ignore everything in this repo other than this README.
 
 - [Motivation](#Motivatione)
 - [Definitions](#Definitions)
-- [Proposed Solution](#proposed-solution)
+- [Proposed Solution](#Proposed-Solution---Summary)
 - [References](#References)
 
 ## Motivation
@@ -166,7 +166,7 @@ Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 
 ## Proposed Solution - Details
 
-## Editorial cleanup of identifier-related Abstract Operations
+### 1. Editorial cleanup of identifier-related Abstract Operations
 
 Currently, the Temporal (and pre-Temporal) ECMA-262 and ECMA-402 specs contain several implementation-defined abstract operations dealing with time zone identifiers, as well as several 262 AOs overridden in 402.
 
@@ -198,7 +198,7 @@ Can't throw.
 **`GetCanonicalTimeZoneIdentifier(_identifier_)`** - Rename of [ECMA-402 CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename), but moved to ECMA-262 and updated to no longer be implementation-defined. Similar implementation to `GetAvailableTimeZoneIdentifier`, but will return `[[LinkTarget]]` when non-empty and `[[Identifier]]` otherwise.
 Can't throw.
 
-## Align spec with implementation behavior
+### 2. Align spec with implementation behavior
 
 Currently, the ECMA-402 spec (and the 402 section of the Temporal spec) tells implementers to use TZDB, but doesn't provide enough detail to differentiate the myriad ways that TZDB data can be built.
 (TZDB's makefile has a number of build options that yield normatively different results.)
@@ -216,7 +216,7 @@ There's useful info in [@anba](https://github.com/anba)'s comments [here](https:
 
 Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers` (the only implementation-defined AO related to TZDB identifiers) and would be removed from their current home in `GetCanonicalTimeZoneName`.
 
-## Fix out-of-date canonicalizations in V8/WebKit
+### 3. Fix out-of-date canonicalizations in V8/WebKit
 
 The list below shows 13 Links which have been superseded in IANA and Firefox, but still canonicalize to the "old" identifier in CLDR (and hence ICU and therefore V8 and WebKit).
 
@@ -243,7 +243,7 @@ const outofDateLinks = [
 ];
 ```
 
-## Prescriptive spec text to reduce divergence between implementations
+### 4. Prescriptive spec text to reduce divergence between implementations
 
 This step involves agreement between implementers and TG2 about how canonicalization should work.
 It may require agreeing on (or recommending) which external source of canonicalization (IANA or CLDR) ECMAScript should rely on, and (if IANA) which TZDB build options should be used.
@@ -251,7 +251,7 @@ Making progress here requires input from specifiers and implementers who underst
 Note that one acceptable outcome may be to “agree to disagree” as long as we can agree on most parts.
 We don’t need perfect alignment to reduce ecosystem variance.
 
-## Defer Link-traversing canonicalization
+### 5. Defer Link-traversing canonicalization
 
 This normative change would defer Link traversal to enable a Link identifier to be stored in internal slots of `ZonedDateTime`, `TimeZone`, and perhaps `DateTimeFormat`, so that it can be returned back to the user.
 
@@ -276,7 +276,7 @@ A few performance-related notes:
 - This change WOULD NOT require storing both original and canonical IDs in each `TimeZone` and `ZonedDateTime` instance.
   Implementations could choose to do this for ease of implementation, but they can also save a few bytes per object by canonicalizing just-in-time via a 2.3KB map of each identifier's index to its corresponding Zone's identifier's index.
 
-## Add `TimeZone.prototype.equals`
+### 6. Add `TimeZone.prototype.equals`
 
 The final step, which could be deferred to a later proposal, would expose Temporal's [`TimeZoneEquals`](https://tc39.es/proposal-temporal/#sec-temporal-timezoneequals) to ECMAScript code to enable developers to compare two time zones to see if they resolve to the same Zone.
 
