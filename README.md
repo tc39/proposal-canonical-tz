@@ -205,21 +205,25 @@ Currently, the ECMA-402 spec (and the 402 section of the Temporal spec) tells im
 In this step, we'd update the spec to provide more guidance for implementers about which TZDB data is in vs. out of scope, especially around canonicalization behavior.
 
 The goal would be to be broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
-Specifically, we want to tighten current language like this which AFAICT is wrong and was never implemented:
-
-```
-1. If _ianaTimeZone_ is a Link name, let _ianaTimeZone_ be the String value of the corresponding Zone name as specified in the file <code>backward</code> of the IANA Time Zone Database.
-```
 
 There's useful info in [@anba](https://github.com/anba)'s comments [here](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) that could be used as a starting point.
 
-Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers` (the only implementation-defined AO related to TZDB identifiers) and would be removed from their current home in `GetCanonicalTimeZoneName`.
+Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers`, the home (after (1) lands) of implementation-defined canonicalization requirements.
 
 ### 3. Fix out-of-date canonicalizations in V8/WebKit
 
 The list below shows 13 Links which have been superseded in IANA and Firefox, but still canonicalize to the "old" identifier in CLDR (and hence ICU and therefore V8 and WebKit).
+The data below comes from the 2022g version of TZDB, via a simple [test app](https://4rylir.csb.app/) that can be used to test various browsers' canonicalization behavior.
 
-The work here would be partnering with representatives from V8 and WebKit (and maybe ICU and CLDR too) to see how we can get V8/WebKit onto the modern canonical forms of these identifiers.
+There is some urgency to fix these outdated Links because as noted [above](#Temporal-makes-these-problems-more-disruptive), changing canonicalization after Temporal is widely adopted will cause more churn and customer complaints.
+
+To fix these outdated Links, we'd partner with representatives from V8 and WebKit (and maybe ICU and CLDR too) to see if there's a quick, low-cost way for V8/WebKit to update canonicalization of these 13 Zones.
+
+Note that renaming of TZDB identifiers is very infrequent.
+From a review of the TZDB [NEWS](https://data.iana.org/time-zones/tzdb/NEWS) file, there was only one rename per year from 2020-2022.
+Before that, the last rename was Rangoon => Yangon in 2016.
+Ideally ICU would provide a timely solution to these outdated identifiers.
+But in the meantime, if implementations had to hand-code overrides in a special-case list, then it would not need to be updated often.
 
 ```javascript
 // [0] => canonical in V8/WebKit (from CLDR)
@@ -236,8 +240,8 @@ const outofDateLinks = [
   ['America/Coral_Harbour', 'America/Atikokan'],
   ['Atlantic/Faeroe', 'Atlantic/Faroe'],
   ['America/Godthab', 'America/Nuuk'],
-  ['Pacific/Truk', 'Pacific/Chuuk', 'Pacific/Yap'], // Chuuk is correct
-  ['Pacific/Enderbury', 'Pacific/Kanton'], // Enderbury is uninhabited; Kanton is best
+  ['Pacific/Truk', 'Pacific/Chuuk', 'Pacific/Yap'],
+  ['Pacific/Enderbury', 'Pacific/Kanton'],
   ['Pacific/Ponape', 'Pacific/Pohnpei']
 ];
 ```
