@@ -39,7 +39,7 @@ Temporal.TimeZone.from('Asia/Kolkata');
 ```javascript
 // TZDB has build options and the spec is silent on which to pick.
 // Default build options, while conforming, are bad for users.
-Temporal.TimeZone.from('Atlantic/Reykyavik');
+Temporal.TimeZone.from('Atlantic/Reykjavik');
 // => Africa/Abidjan
 Temporal.TimeZone.from('Europe/Stockholm');
 // => Europe/Berlin
@@ -370,7 +370,7 @@ One of the goals of this proposal is to define which of these build options shou
 Provides pre-built TZDB data files using build options that are more aligned with the needs of Java (and also ECMAScript) than the default TZDB build options.
 
 The files in global-tz are claimed (by the [TZDB News](https://github.com/eggert/tz/blob/27148539e699d9abe50df84371a077fdf2bc13de/NEWS#L427-L430) file) to be the same as the results of building TZDB with `make PACKRATDATA=backzone PACKRATLIST=zone.tab`.
-This build configuration backs out undesirable (from ECMAScript's point of view) merging of unrelated time zones like `Atlantic/Reykyavik` and `Africa/Abidjan` that may diverge in the future.
+This build configuration backs out undesirable (from ECMAScript's point of view) merging of unrelated time zones like `Atlantic/Reykjavik` and `Africa/Abidjan` that may diverge in the future.
 
 Also, this build configuration is similar to the Zones and Links used by Firefox.
 
