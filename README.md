@@ -155,8 +155,7 @@ Temporal.TimeZone.from('Asia/Calcutta');
 ```
 
 6. [**Add `TimeZone.prototype.equals`.**](#Add-TimeZoneprototypeequals)
-   Because (5) would stop canonicalizing IDs upon `TimeZone` object creation, it'd be helpful to have an ergonomic way to check if two `TimeZone` objects represented the same Zone.
-   This can be deferred to a later proposal if needed.
+   Because (5) would stop canonicalizing IDs upon `TimeZone` object creation, it'd be helpful to have an ergonomic way to know if two `TimeZone` objects represent the same Zone.
 
 ```javascript
 // More ergonomic canonical-equality testing
