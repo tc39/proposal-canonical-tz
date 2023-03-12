@@ -151,7 +151,7 @@ Steps below are designed to be "severable"; if blocked due to implementation com
 ```javascript
 Temporal.TimeZone.from('Asia/Calcutta');
 // => Asia/Kolkata (current Temporal behavior on Firefox)
-// => Asia/Calcutta (proposed: don't follow Links by default)
+// => Asia/Calcutta (proposed: don't follow Links when returning IDs to callers)
 ```
 
 6. [**Add `TimeZone.prototype.equals`.**](#Add-TimeZoneprototypeequals)
