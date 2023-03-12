@@ -212,8 +212,8 @@ Note that these spec text changes would likely go into `AvailableTimeZoneIdentif
 
 ### 3. Fix out-of-date canonicalizations in V8/WebKit
 
-The list below shows 13 Links which have been superseded in IANA and Firefox, but still canonicalize to the "old" identifier in CLDR (and hence ICU and therefore V8 and WebKit).
-The data below comes from the 2022g version of TZDB, via a simple [test app](https://4rylir.csb.app/) that can be used to test various browsers' canonicalization behavior.
+The list below shows 13 Links that have been superseded in IANA and Firefox, but still canonicalize to the "old" identifier in CLDR (and hence ICU and therefore V8 and WebKit).
+The data below comes from the 2022g version of TZDB, via a simple [CodeSandbox app](https://4rylir.csb.app/) that tests browsers' canonicalization behavior.
 
 There is some urgency to fix these outdated Links because as noted [above](#Temporal-makes-these-problems-more-disruptive), changing canonicalization after Temporal is widely adopted will cause more churn and customer complaints.
 
