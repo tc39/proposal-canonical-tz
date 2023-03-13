@@ -137,7 +137,7 @@ Steps below are designed to be "severable"; if blocked due to implementation com
 ### Reduce variation between implementations, and between implementations and spec
 
 1. **[Simplify abstract operations](#1-Editorial-cleanup-of-identifier-related-Abstract-Operations)** dealing with time zone identifiers. (editorial only)
-2. **[Align spec](#2-Align-spec-with-implementation-behavior)** to support how implementations actually behave.
+2. **[Clarify spec](#2-Clarify-spec-to-prevent-more-divergence)** to prevent more divergence
 3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#3-Fix-out-of-date-canonicalizations-in-V8WebKit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
 4. [**Prescriptive spec text to reduce divergence between implementations.**](#4-prescriptive-spec-text-to-reduce-divergence-between-implementations)
    This step requires finding common ground between implementers as well as TG2 (the ECMA-402 team) about how canonicalization should work.
@@ -197,16 +197,18 @@ Can't throw.
 **`GetCanonicalTimeZoneIdentifier(_identifier_)`** - Rename of [ECMA-402 CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename), but moved to ECMA-262 and updated to no longer be implementation-defined. Similar implementation to `GetAvailableTimeZoneIdentifier`, but will return `[[LinkTarget]]` when non-empty and `[[Identifier]]` otherwise.
 Can't throw.
 
-### 2. Align spec with implementation behavior
+### 2. Clarify spec to prevent more divergence
 
 Currently, the ECMA-402 spec (and the 402 section of the Temporal spec) tells implementers to use TZDB, but doesn't provide enough detail to differentiate the myriad ways that TZDB data can be built.
-(TZDB's makefile has a number of build options that yield normatively different results.)
+(TZDB's makefile has a number of build options that yield normatively different data file output.)
 
 In this step, we'd update the spec to provide more guidance for implementers about which TZDB data is in vs. out of scope, especially around canonicalization behavior.
 
-The goal would be to be broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
+The changes would be broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
 
-There's useful info in [@anba](https://github.com/anba)'s comments [here](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) that could be used as a starting point.
+Another goal would be to inhibit further divergence (between implementation, and between implementations and spec) beyond what already exists.
+For example, all ECMAScript implementations seem to avoid use of the the default TZDB build options that perform over-eager canonicalization like `Atlantic/Reykjavik=>Africa/Abidjan`.
+We should codify this (good) existing practice in the spec.
 
 Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers`, the home (after (1) lands) of implementation-defined canonicalization requirements.
 
@@ -253,6 +255,8 @@ It may require agreeing on (or recommending) which external source of canonicali
 Making progress here requires input from specifiers and implementers who understand the tradeoffs involved.
 Note that one acceptable outcome may be to “agree to disagree” as long as we can agree on most parts.
 We don’t need perfect alignment to reduce ecosystem variance.
+
+There's useful info in [@anba](https://github.com/anba)'s comments [here](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) that could be used as a starting point.
 
 ### 5. Defer Link-traversing canonicalization
 
