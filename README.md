@@ -258,6 +258,8 @@ We don’t need perfect alignment to reduce ecosystem variance.
 
 There's useful info in [@anba](https://github.com/anba)'s comments [here](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) that could be used as a starting point.
 
+It will likely be much easier to achieve consensus on this spec text after progress is made on (3) above, because those 13 outdated Links are the largest current difference in canonicalization behavior between Firefox and V8/WebKit.
+
 ### 5. Defer Link-traversing canonicalization
 
 This normative change would defer Link traversal to enable a Link identifier to be stored in internal slots of `ZonedDateTime`, `TimeZone`, and perhaps `DateTimeFormat`, so that it can be returned back to the user.
