@@ -154,7 +154,7 @@ Temporal.TimeZone.from('Asia/Calcutta');
 // => Asia/Calcutta (proposed: don't follow Links when returning IDs to callers)
 ```
 
-6. [**Add `TimeZone.prototype.equals`.**](#6-add-timezoneprototypeequals)
+6. [**Add `Temporal.TimeZone.prototype.equals`.**](#6-add-temporaltimezoneprototypeequals)
    Because (5) would stop canonicalizing IDs upon `TimeZone` object creation, it'd be helpful to have an ergonomic way to know if two `TimeZone` objects represent the same Zone.
 
 ```javascript
@@ -279,7 +279,7 @@ A few performance-related notes:
 - This change WOULD NOT require storing both original and canonical IDs in each `TimeZone` and `ZonedDateTime` instance.
   Implementations could choose to do this for ease of implementation, but they can also save a few bytes per object by canonicalizing just-in-time via a 2.3KB map of each identifier's index to its corresponding Zone's identifier's index.
 
-### 6. Add `TimeZone.prototype.equals`
+### 6. Add `Temporal.TimeZone.prototype.equals`
 
 The final step would expose Temporal's [`TimeZoneEquals`](https://tc39.es/proposal-temporal/#sec-temporal-timezoneequals) to ECMAScript code to enable developers to compare two time zones to see if they resolve to the same Zone.
 
