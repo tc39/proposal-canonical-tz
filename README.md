@@ -136,15 +136,15 @@ Steps below are designed to be "severable"; if blocked due to implementation com
 
 ### Reduce variation between implementations, and between implementations and spec
 
-1. **[Simplify abstract operations](#Editorial-cleanup-of-identifier-related-Abstract-Operations)** dealing with time zone identifiers. (editorial only)
-2. **[Align spec](#Align-spec-with-implementation-behavior)** to support how implementations actually behave.
-3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#Fix-out-of-date-canonicalizations-in-V8WebKit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
-4. [**Prescriptive spec text to reduce divergence between implementations.**](#Prescriptive-spec-text-to-reduce-divergence-between-implementations)
+1. **[Simplify abstract operations](#1-Editorial-cleanup-of-identifier-related-Abstract-Operations)** dealing with time zone identifiers. (editorial only)
+2. **[Align spec](#2-Align-spec-with-implementation-behavior)** to support how implementations actually behave.
+3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#3-Fix-out-of-date-canonicalizations-in-V8WebKit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
+4. [**Prescriptive spec text to reduce divergence between implementations.**](#4-prescriptive-spec-text-to-reduce-divergence-between-implementations)
    This step requires finding common ground between implementers as well as TG2 (the ECMA-402 team) about how canonicalization should work.
 
 ### Reduce impact of canonicalization changes
 
-5. [**Avoid observable following of Links.**](#Defer-Link-traversing-canonicalization)
+5. [**Avoid observable following of Links.**](#5-Defer-Link-traversing-canonicalization)
    If canonicalization changes don't affect existing code, then it's much less likely for future canonicalization changes to break the Web.
    Because canonicalization is implementation-defined, this change may (or may not; needs research) be safe to ship after Temporal Stage 4, but best to not wait too long.
 
@@ -154,7 +154,7 @@ Temporal.TimeZone.from('Asia/Calcutta');
 // => Asia/Calcutta (proposed: don't follow Links when returning IDs to callers)
 ```
 
-6. [**Add `TimeZone.prototype.equals`.**](#Add-TimeZoneprototypeequals)
+6. [**Add `TimeZone.prototype.equals`.**](#6-add-timezoneprototypeequals)
    Because (5) would stop canonicalizing IDs upon `TimeZone` object creation, it'd be helpful to have an ergonomic way to know if two `TimeZone` objects represent the same Zone.
 
 ```javascript
@@ -281,10 +281,10 @@ A few performance-related notes:
 
 ### 6. Add `TimeZone.prototype.equals`
 
-The final step, which could be deferred to a later proposal, would expose Temporal's [`TimeZoneEquals`](https://tc39.es/proposal-temporal/#sec-temporal-timezoneequals) to ECMAScript code to enable developers to compare two time zones to see if they resolve to the same Zone.
+The final step would expose Temporal's [`TimeZoneEquals`](https://tc39.es/proposal-temporal/#sec-temporal-timezoneequals) to ECMAScript code to enable developers to compare two time zones to see if they resolve to the same Zone.
 
 ```javascript
-// More ergoonomic canonical-equality testing
+// More ergonomic canonical-equality testing
 Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 // => true
 ```
@@ -298,10 +298,10 @@ A reason to include this new API in this proposal instead of waiting until later
 Without this API, testing for canonical equality is still possible, it's just less ergonomic:
 
 ```javascript
+const EPOCH = Temporal.Instant.fromNanoseconds(0n);
 function canonicalEquals(zone1, zone2) {
-  const instant = Temporal.Instant.fromNanoseconds(0n);
-  const zdt1 = instant.toZonedDateTimeISO(zone1);
-  const zdt2 = instant.toZonedDateTimeISO(zone2);
+  const zdt1 = EPOCH.toZonedDateTimeISO(zone1);
+  const zdt2 = EPOCH.toZonedDateTimeISO(zone2);
   return zdt1.equals(zdt2);
 }
 ```
