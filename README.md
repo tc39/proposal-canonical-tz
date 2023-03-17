@@ -7,6 +7,7 @@ This proposal improves developer experience when the canonical identifier of a t
 
 This proposal is currently [Stage 0](https://github.com/tc39/proposals/blob/main/stage-0-proposals.md) following the [TC39 process](https://tc39.es/process-document/).
 Its champions are planning to ask to advance to [Stage 1](https://github.com/tc39/proposals#stage-1) in the upcoming March 2023 TC39 plenary meeting.
+([Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/))
 
 Because this proposal is "stacked" on top of the Temporal proposal, its repo is temporarily built on top of a clone of the [`proposal-temporal`](https://github.com/tc39/proposal-temporal) repo.
 If this proposal progresses forward in the TC39 stages and spec text and a polyfill are added, its repo will be cleaned up for easier review.
