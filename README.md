@@ -57,6 +57,9 @@ Temporal.TimeZone.from('Europe/Zagreb');
 - [CLDR-9718: Rename from Asia/Calcutta to Asia/Kolkata in Zone - Tzid mapping and windows mapping](https://unicode-org.atlassian.net/browse/CLDR-9718)
 - [Incorrect canonical time zone name for Asia/Kolkata · Issue #1076 · tc39/proposal-temporal](https://github.com/tc39/proposal-temporal/issues/1076)
 - [[tz] Kyiv not Kiev](https://mm.icann.org/pipermail/tz/2021-January/029695.html) (from [IANA TZDB mailing list](https://mm.icann.org/pipermail/tz/)).
+- [WebKit 218542: Incorrect timezone returned for Buenos Aires](https://bugs.webkit.org/show_bug.cgi?id=218542)
+- [Firefox 1796393: Javascript returns problematic timezone, breaking sites](https://bugzilla.mozilla.org/show_bug.cgi?id=1796393)
+- [Firefox 1825512: Europe/Kyiv is not a valid IANA timezone identifier](https://bugzilla.mozilla.org/show_bug.cgi?id=1825512)
 - It's easy to find dozens more.
 
 ### Can't depend on static data behaving the same over time
