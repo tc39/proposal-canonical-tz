@@ -5,12 +5,13 @@ This proposal improves developer experience when the canonical identifier of a t
 
 ## Status
 
-This proposal is currently [Stage 0](https://github.com/tc39/proposals/blob/main/stage-0-proposals.md) following the [TC39 process](https://tc39.es/process-document/).
-Its champions are planning to ask to advance to [Stage 1](https://github.com/tc39/proposals#stage-1) in the upcoming March 2023 TC39 plenary meeting.
-([Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/))
+This proposal is currently [Stage 1](https://github.com/tc39/proposals/blob/main/stage-1-proposals.md) following the [TC39 process](https://tc39.es/process-document/).
+Its champions are planning to ask to advance to [Stage 2](https://github.com/tc39/proposals#stage-2) in the upcoming May 2023 TC39 plenary meeting.
+
+Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) from the March 2023 TC39 plenary meeting where this proposal advanced to Stage 1.
 
 Because this proposal is "stacked" on top of the Temporal proposal, its repo is temporarily built on top of a clone of the [`proposal-temporal`](https://github.com/tc39/proposal-temporal) repo.
-If this proposal progresses forward in the TC39 stages and spec text and a polyfill are added, its repo will be cleaned up for easier review.
+As this proposal progresses and spec text and a polyfill are added, its repo will be cleaned up for easier review.
 In the meantime, please ignore everything in this repo other than this README.
 
 ## Champions
@@ -171,52 +172,47 @@ Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 
 ### 1. Editorial cleanup of identifier-related Abstract Operations
 
+_Status: PR submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035), waiting for review._
+
 Currently, the Temporal (and pre-Temporal) ECMA-262 and ECMA-402 specs contain several implementation-defined abstract operations dealing with time zone identifiers, as well as several 262 AOs overridden in 402.
 
-Even without making any normative changes, we can simplify the specs quite a bit.
-In the process, we can reduce the delta required for the proposed normative changes.
-The current plan is to make these editorial changes in the next month or two while Temporal is still in Stage 3.
+Even without normative changes, we can simplify the specs quite a bit.
+In the process, we can reduce the delta required for the proposed normative changes, the delta between ECMA-262 and ECMA-402 specs, and the delta between Temporal and ECMA 262 specs.
+The main changes are adding two new abstract operations, which will enable all other time-zine-identifier-related functionality in ECMA-262, ECMA-402, and Temporal to be built on top as non-implementation-defined AOs.
 
-**`AvailableTimeZoneIdentifiers()`** - Rename of [Temporal AvailableTimeZones](https://tc39.es/proposal-temporal/#sec-availabletimezones).
-Change the returned value from an implementation-defined List of Strings to an implementation-defined List of Records, each composed of:
+**`AvailableTimeZoneIdentifiers()`** - Returns an implementation-defined List of Records, each composed of:
 
 - `[[Identifier]]`: identifier in the IANA TZDB
-- `[[CanonicalIdentifier]]`: identifier of transitive IANA Link target (following as many Links as necessary to reach a Zone), or `undefined` for non-Link identifiers
+- `[[PrimaryIdentifier]]`: identifier of transitive IANA Link target (following as many Links as necessary to reach a Zone), with the same special-casing of `"UTC"` as in ECMA-402's [CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename).
 
-This AO would be the **only** implementation-defined AO for time zone identifiers.
-The default implementation would return a one-record List: `« { [[Identifier]]: *"UTC"*, [[CanonicalIdentifier]]: *undefined* } »`.
+**`GetAvailableTimeZoneIdentifier(_identifier_)`** - Filters the result of `AvailableTimeZoneIdentifiers` to return the record where `[[Identifier]]` is an ASCII-case-insensitive match for `_identifier_`, or `~empty~` if there's no match.
+This AO will:
 
-**`IsAvailableTimeZoneIdentifier(_identifier_)`** - Rename of [Temporal IsAvailableTimeZoneName](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) (which performs case-insensitive searching against AvailableTimeZones() with a minor change to look at `[[Identifier]]`.
-Can't throw.
+- Replace `CanonicalizeTimeZoneName` in [Temporal](https://tc39.es/proposal-temporal/#sec-canonicalizetimezonename) and [ECMA-402](https://tc39.es/ecma402/#sec-canonicalizetimezonename) by using the `[[Identifier]]` of the result.
+- Replace [`IsAvailableTimeZoneName`](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) in Temporal and [`IsValidTimeZoneName`](https://tc39.es/ecma402/#sec-isvalidtimezonename) in ECMA-402, by comparing the result to `~empty~`.
+- Fetch a case-normalized time zone identifier by using the `[[Identifier]]` of the result.
+  This will be used in later parts of this proposal.
 
-**`GetAvailableTimeZoneIdentifier(_identifier_)`** - Like `IsAvailableTimeZoneIdentifier`, but returns `[[Identifier]]` if there's a case-insensitive match, or `*undefined*` if not matched. Except: if `[[LinkTarget]]` is `*"UTC"*` then return `*"UTC"*`. This AO is new and can be used to fetch a case-normalized identifier. Can't throw.
-
-> ISSUE: should we keep the UTC exception here?
-> Currently, UTC is special-cased in the spec, and we expect that a common ECMAScript code pattern will be `if (foo.id === 'UTC') { ... }`.
-> Also, the city-renaming problem never affects UTC zones so many of the problems noted above don't apply to UTC because UTC cannot turn into a Link in the future.
-> Also, the canonical identifier in IANA is `Etc/UTC`, not `UTC`, so the spec is already doing something unusual here, which we don't want to change for backwards compatibility reasons.
-> So there's not yet a clear answer here.
-> Discussion needed.
-
-**`GetCanonicalTimeZoneIdentifier(_identifier_)`** - Rename of [ECMA-402 CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename), but moved to ECMA-262 and updated to no longer be implementation-defined. Similar implementation to `GetAvailableTimeZoneIdentifier`, but will return `[[LinkTarget]]` when non-empty and `[[Identifier]]` otherwise.
-Can't throw.
+As soon as those changes to ECMA-262 are merged, then this proposal's champions will author editorial PRs to ECMA-402 and Temporal to use the new ECMA-262 abstract operations and remove overridden AOs.
 
 ### 2. Clarify spec to prevent more divergence
+
+_Status: PR submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035) (same PR as Step 1 above), waiting for review._
 
 Currently, the ECMA-402 spec (and the 402 section of the Temporal spec) tells implementers to use TZDB, but doesn't provide enough detail to differentiate the myriad ways that TZDB data can be built.
 (TZDB's makefile has a number of build options that yield normatively different data file output.)
 
-In this step, we'd update the spec to provide more guidance for implementers about which TZDB data is in vs. out of scope, especially around canonicalization behavior.
-
-The changes would be broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
+In this step, we update the spec to provide recommendations for implementers about canonicalization behavior.
+Recommendations are broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
 
 Another goal would be to inhibit further divergence (between implementation, and between implementations and spec) beyond what already exists.
 For example, all ECMAScript implementations seem to avoid use of the the default TZDB build options that perform over-eager canonicalization like `Atlantic/Reykjavik=>Africa/Abidjan`.
-We should codify this (good) existing practice in the spec.
-
-Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers`, the home (after (1) lands) of implementation-defined canonicalization requirements.
+We will recommend that all implementations follow this best practice.
 
 ### 3. Fix out-of-date canonicalizations in V8/WebKit
+
+_Status: At a CLDR meeting on 2023-03-29, CLDR [agreed](https://unicode-org.atlassian.net/browse/CLDR-14453?focusedCommentId=169191) to develop a design proposal to provide IANA current canonicalization info._
+_Please follow https://unicode-org.atlassian.net/browse/CLDR-14453 for updates on progress._
 
 The list below shows 13 Links that have been superseded in IANA and Firefox, but still canonicalize to the "old" identifier in CLDR (and hence ICU and therefore V8 and WebKit).
 The data below comes from the 2022g version of TZDB, via a simple [CodeSandbox app](https://4rylir.csb.app/) that tests browsers' canonicalization behavior.
