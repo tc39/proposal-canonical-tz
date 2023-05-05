@@ -1,5 +1,3 @@
-# There's currently a GitHub Actions permissions issue preventing publishing spec text HTML to https://tc39.es/proposal-canonical-tz. Until we get the deploy action fixed, spec text (15 lines of changes + one editorial paragraph) can be found [here](https://github.com/tc39/proposal-canonical-tz/blob/main/spec.html) (raw) or [here](https://docs.google.com/presentation/d/111ycHJtLQ7mZkebv8rBfF6KKOSJfIeAXi2oNL_orOVs/edit#slide=id.g22181d24971_0_19) (pretty).
-
 # Handling Time Zone Canonicalization Changes
 
 Time zones in ECMAScript rely on IANA Time Zone Database ([TZDB](https://www.iana.org/time-zones)) identifiers like `America/Los_Angeles` or `Asia/Tokyo`.
