@@ -1,51 +1,30 @@
 <!doctype html>
 <meta charset="utf8">
 <pre class=metadata>
-title: Temporal proposal
-stage: 3
-contributors: Maggie Pint, Matt Johnson, Brian Terlson, Daniel Ehrenberg, Philipp Dunkel, Sasha Pierson, Ujjwal Sharma, Philip Chimento, Justin Grant
+title: Time Zone Canonicalization proposal
+stage: 1
+contributors: Justin Grant, Richard Gibson
 markEffects: true
 </pre>
 <emu-biblio href="spec/biblio.json"></emu-biblio>
+<emu-biblio href="spec/temporal-biblio.json"></emu-biblio>
 
-<emu-intro id=sec-temporal-intro>
-  <h1>Introduction</h1>
-  <p>The venerable ECMAScript Date object has a number of challenges, including lack of immutability, lack of support for time zones, lack of support for use cases that require dates only or times only, a confusing and non-ergonomic API, and many other challenges.</p>
-  <p>The Temporal set of types addresses these challenges with a built-in date and time API for ECMAScript that includes:</p>
+<emu-intro id=sec-canonical-tz-intro>
+  <h1>Time Zone Canonicalization proposal</h1>
+  <p>This proposal aims to:</p>
   <ul>
-    <li>First-class support for all time zones, including DST-<emu-not-ref>safe</emu-not-ref> arithmetic</li>
-    <li>Strongly-typed objects for dates, times, date/<emu-not-ref>time values</emu-not-ref>, year/month values, month/year values, "zoned" date/<emu-not-ref>time values</emu-not-ref>, and durations</li>
-    <li>Immutability for all Temporal objects</li>
-    <li>String serialization and interoperability via standardized formats</li>
-    <li>Compliance with industry standards like ISO 8601, RFC 3339, and RFC5545 (iCalendar)</li>
-    <li>Full support for non-Gregorian calendars</li>
+    <li>Improve consistency across ECMAScript engines with regard to time zone identifiers, so that programs will behave more similarly across engines</li>
+    <li>Make ECMAScript programs more resilient to changes in time zone identifiers, like 2022's change of <code>Europe/Kiev</code> to <code>Europe/Kyiv</code></li>
   </ul>
-  <emu-figure id="temporal-object-model" caption="Temporal Object Relationships">
-    <object data="docs/object-model.svg" type="image/svg+xml"></object>
-  </emu-figure>
-  <emu-figure id="temporal-persistence-model" caption="Temporal String Persistence">
-    <object data="docs/persistence-model.svg" type="image/svg+xml"></object>
-  </emu-figure>
 
-  <p>This specification consists of three parts:</p>
+  <p>This specification consists of two parts:</p>
   <ul>
-    <li>The specification of the Temporal object and everything related to it, proposed to be added to ECMA-262 in new sections;</li>
-    <li>A list of amendments to be made to ECMA-262, other than the new sections above;</li>
-    <li>A list of amendments to be made to ECMA-402.</li>
+    <li>Amendments to ECMA-262, stacked on top of the Temporal proposal</li>
+    <li>Amendments to ECMA-402, also stacked on top of the Temporal proposal.</li>
   </ul>
+
+  <p>To provide feedback on this proposal, please visit the proposal repository at <a href="https://github.com/tc39/proposal-canonical-tz">https://github.com/tc39/proposal-canonical-tz</a>.</p>
 </emu-intro>
 
-<emu-import href="spec/temporal.html"></emu-import>
-<emu-import href="spec/plaindate.html"></emu-import>
-<emu-import href="spec/plaintime.html"></emu-import>
-<emu-import href="spec/plaindatetime.html"></emu-import>
-<emu-import href="spec/zoneddatetime.html"></emu-import>
-<emu-import href="spec/duration.html"></emu-import>
-<emu-import href="spec/instant.html"></emu-import>
-<emu-import href="spec/plainyearmonth.html"></emu-import>
-<emu-import href="spec/plainmonthday.html"></emu-import>
 <emu-import href="spec/timezone.html"></emu-import>
-<emu-import href="spec/calendar.html"></emu-import>
-<emu-import href="spec/abstractops.html"></emu-import>
-<emu-import href="spec/mainadditions.html"></emu-import>
 <emu-import href="spec/intl.html"></emu-import>
