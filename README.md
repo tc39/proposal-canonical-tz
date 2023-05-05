@@ -9,7 +9,7 @@ This proposal improves developer experience when the canonical identifier of a t
 
 This proposal is currently [Stage 1](https://github.com/tc39/proposals/blob/main/stage-1-proposals.md) following the [TC39 process](https://tc39.es/process-document/).
 
-Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the upcoming May 2023 TC39 plenary meeting where this proposal's champions will be asking to advance this proposal to [Stage 2](https://github.com/tc39/proposals#stage-2).
+Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the upcoming May 2023 TC39 plenary meeting where this proposal's champions will ask to advance this proposal to [Stage 2](https://github.com/tc39/proposals#stage-2).
 
 Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) from the March 2023 TC39 plenary meeting where this proposal advanced to Stage 1.
 
