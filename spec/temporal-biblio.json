@@ -1,0 +1,32 @@
+[
+  {
+    "location": "https://tc39.es/proposal-temporal/",
+    "entries": [
+      {
+        "type": "op",
+        "aoid": "GetAvailableTimeZoneIdentifier",
+        "id": "sec-getavailabletimezoneidentifier"
+      },
+      {
+        "type": "op",
+        "aoid": "FormatTimeZoneOffsetString",
+        "id": "sec-formattimezoneoffsetstring"
+      },
+      {
+        "type": "op",
+        "aoid": "ObjectImplementsTemporalTimeZoneProtocol",
+        "id": "sec-objectimplementstemporaltimezoneprotocol"
+      },
+      {
+        "type": "op",
+        "aoid": "ParseTemporalTimeZoneString",
+        "id": "sec-parsetemporaltimezonestring"
+      },
+      {
+        "type": "op",
+        "aoid": "ToTemporalTimeZoneIdentifier",
+        "id": "sec-totemporaltimezoneidentifier"
+      }
+    ]
+  }
+]
