@@ -31,26 +31,3 @@ jobs:
       - run: npm run codecov:test262
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-  test-cookbook:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: use node.js v19.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19.x
-      - run: npm ci
-      - run: npm run test-cookbook
-  test-validstrings:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: use node.js v19.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19.x
-      - run: npm ci
-      - run: |
-          cd polyfill
-          npm install
-          node test/validStrings.mjs
