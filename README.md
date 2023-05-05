@@ -6,13 +6,20 @@ This proposal improves developer experience when the canonical identifier of a t
 ## Status
 
 This proposal is currently [Stage 1](https://github.com/tc39/proposals/blob/main/stage-1-proposals.md) following the [TC39 process](https://tc39.es/process-document/).
-Its champions are planning to ask to advance to [Stage 2](https://github.com/tc39/proposals#stage-2) in the upcoming May 2023 TC39 plenary meeting.
+
+Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the upcoming May 2023 TC39 plenary meeting where this proposal's champions will be asking to advance this proposal to [Stage 2](https://github.com/tc39/proposals#stage-2).
 
 Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) from the March 2023 TC39 plenary meeting where this proposal advanced to Stage 1.
 
-Because this proposal is "stacked" on top of the Temporal proposal, its repo is temporarily built on top of a clone of the [`proposal-temporal`](https://github.com/tc39/proposal-temporal) repo.
-As this proposal progresses and spec text and a polyfill are added, its repo will be cleaned up for easier review.
-In the meantime, please ignore everything in this repo other than this README.
+This proposal's specification is "stacked" on top of the [Temporal proposal](https://github.com/tc39/proposal-temporal).
+This means that this proposal builds on Temporal features, notably the [`Temporal.TimeZone`](https://tc39.es/proposal-temporal/docs/timezone.html) built-in object.
+
+## Specification
+
+The specification text for this proposal can be found at https://tc39.es/proposal-canonical-tz.
+
+Currently this spec text is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal.
+This PR is expected to be merged soon.
 
 ## Champions
 
@@ -132,6 +139,8 @@ zdt.toString();
   When a Zone is renamed, a Link from the old name to the new one is added to [`backward`](https://github.com/eggert/tz/blob/main/backward).
   Renaming to update the spelling of a city happens every few years.
   There are currently 133 Links (avg length 12.2 chars).
+- **Case-normalization** - Match user-provided IDs to case in IANA TZDB. Example: `america/los_angeles` ⇨ `America/Los_Angeles`
+- **Canonicalization** - Return the IANA Zone, resolving Links if needed. Example: Europe/Kiev ⇨ Europe/Kyiv
 - **CLDR Canonicalization** - Zone &amp; Link [data](https://github.com/unicode-org/cldr-json/blob/main/cldr-json/cldr-bcp47/bcp47/timezone.json) used by V8 & WebKit (via ICU libraries)
 - **IANA Canonicalization** - Zone &amp; Link [data](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) used by Firefox (in custom TZDB build)
 
