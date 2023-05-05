@@ -10,3 +10,4 @@ polyfill/script-instrumented.js
 out/
 .vscode/
 .eslintcache
+.DS_Store

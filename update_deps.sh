@@ -9,11 +9,5 @@ npx npm-check-updates -u -x @pipobscure/demitasse,@pipobscure/demitasse-pretty,@
 npm install
 cd ..
 
-# docs dependencies
-cd docs
-npx npm-check-updates -u
-npm install
-cd ..
-
 # verify that builds still work
 npm run build
