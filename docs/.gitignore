@@ -1,6 +1,0 @@
-node_modules/
-package-lock.json
-*.html
-playground.js
-playground.js.map
-prism.css
