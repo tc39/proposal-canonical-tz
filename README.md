@@ -26,6 +26,11 @@ This PR is expected to be merged soon.
 - Justin Grant ([@justingrant](https://github.com/justingrant))
 - Richard Gibson ([@gibson042](https://github.com/gibson042/))
 
+## Polyfill
+
+A polyfill is not available yet for this proposal.
+Please ignore the `polyfill` folder, as it contains only placeholder content copied from the Temporal proposal repo.
+
 ## Contents
 
 - [Motivation](#Motivatione)
