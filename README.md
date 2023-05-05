@@ -1,3 +1,5 @@
+# There's currently a GitHub Actions permissions issue preventing publishing spec text HTML to https://tc39.es/proposal-canonical-tz. Until we get the deploy action fixed, spec text (15 lines of changes + one editorial paragraph) can be found [here](https://github.com/tc39/proposal-canonical-tz/blob/main/spec.html) (raw) or [here](https://docs.google.com/presentation/d/111ycHJtLQ7mZkebv8rBfF6KKOSJfIeAXi2oNL_orOVs/edit#slide=id.g22181d24971_0_19) (pretty).
+
 # Handling Time Zone Canonicalization Changes
 
 Time zones in ECMAScript rely on IANA Time Zone Database ([TZDB](https://www.iana.org/time-zones)) identifiers like `America/Los_Angeles` or `Asia/Tokyo`.
@@ -186,7 +188,7 @@ Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 
 ### 1. Editorial cleanup of identifier-related Abstract Operations
 
-_Status: PR submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035), waiting for review._
+_Status: PRs submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035) and [tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573). Reviews in progress._
 
 Currently, the Temporal (and pre-Temporal) ECMA-262 and ECMA-402 specs contain several implementation-defined abstract operations dealing with time zone identifiers, as well as several 262 AOs overridden in 402.
 
@@ -202,16 +204,16 @@ The main changes are adding two new abstract operations, which will enable all o
 **`GetAvailableTimeZoneIdentifier(_identifier_)`** - Filters the result of `AvailableTimeZoneIdentifiers` to return the record where `[[Identifier]]` is an ASCII-case-insensitive match for `_identifier_`, or `~empty~` if there's no match.
 This AO will:
 
-- Replace `CanonicalizeTimeZoneName` in [Temporal](https://tc39.es/proposal-temporal/#sec-canonicalizetimezonename) and [ECMA-402](https://tc39.es/ecma402/#sec-canonicalizetimezonename) by using the `[[Identifier]]` of the result.
+- Replace `CanonicalizeTimeZoneName` in [Temporal](https://tc39.es/proposal-temporal/#sec-canonicalizetimezonename) and [ECMA-402](https://tc39.es/ecma402/#sec-canonicalizetimezonename) by using the `[[PrimaryIdentifier]]` of the result.
 - Replace [`IsAvailableTimeZoneName`](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) in Temporal and [`IsValidTimeZoneName`](https://tc39.es/ecma402/#sec-isvalidtimezonename) in ECMA-402, by comparing the result to `~empty~`.
 - Fetch a case-normalized time zone identifier by using the `[[Identifier]]` of the result.
   This will be used in later parts of this proposal.
 
-As soon as those changes to ECMA-262 are merged, then this proposal's champions will author editorial PRs to ECMA-402 and Temporal to use the new ECMA-262 abstract operations and remove overridden AOs.
+The specification text of this proposal is stacked on top of these editorial changes.
 
 ### 2. Clarify spec to prevent more divergence
 
-_Status: PR submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035) (same PR as Step 1 above), waiting for review._
+_Status: PRs submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035) and [tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573). (same PRs as Step 1 above)_
 
 Currently, the ECMA-402 spec (and the 402 section of the Temporal spec) tells implementers to use TZDB, but doesn't provide enough detail to differentiate the myriad ways that TZDB data can be built.
 (TZDB's makefile has a number of build options that yield normatively different data file output.)
@@ -276,28 +278,28 @@ It will likely be much easier to achieve consensus on this spec text after progr
 
 ### 5. Defer Link-traversing canonicalization
 
-This normative change would defer Link traversal to enable a Link identifier to be stored in internal slots of `ZonedDateTime`, `TimeZone`, and perhaps `DateTimeFormat`, so that it can be returned back to the user.
+This normative change would defer Link traversal to enable a Link identifier to be stored in internal slots of `ZonedDateTime`, `TimeZone`, and  `Intl.DateTimeFormat`, so that it can be returned back to the user.
 
 The justification for this change is that canonicalization itself is problematic because it always makes at least some people unhappy: developers of existing code are annoyed when their code behaves differently, while other developers are annoyed if outdated identifiers are used.
 To sidestep both problems, this proposed change would make canonicalization mostly invisible to Temporal users, except one place: time zone identifiers returned from `Temporal.Now`.
 
-A tradeoff of this change is that comparing the string representation of `TimeZone` objects (or their `id` properties) would no longer be a reliable way to test for equality.
+A tradeoff of this change is that comparing the string representation of `TimeZone` objects (or their `id` properties, or the time zone slot of `Temporal.ZonedDateTime`) would no longer be a reliable way to test for equality.
 Therefore, (6) below proposes a new `TimeZone.prototype.equals` API.
 
 This change requires the following normative edits:
 
-- a) Change `GetCanonicalTimeZoneIdentifier` to `GetAvailableTimeZoneIdentifier` in places where user input identifiers are stored.
-- b) Add `GetCanonicalTimeZoneIdentifier` calls before using identifiers for any other purpose than returning them back to ECMAScript code in `id`, `timeZoneId`, `toString`, and `toJSON`.
-- c) Depending on what TG2 decides, maybe include `resolvedOptions().timeZone` to calls that are exempt from canonicalization. Or we could leave its existing canonicalized behavior for backwards compatibility.
+- a) Change `GetAvailableTimeZoneIdentifier(id).[[PrimaryIdentifier]]` to `GetAvailableTimeZoneIdentifier(id).[[Identifier]]` in places where user input identifiers are parsed and/or stored.
+- b) Call `GetAvailableTimeZoneIdentifier(id).[[PrimaryIdentifier]]` before using identifiers for purposes that require canonicalization, such as the `TimeZoneEquals` abstract operation.
 
-An early proof-of-concept PR of these changes is here: https://github.com/tc39/proposal-canonical-tz/pull/1
+These changes are described in the spec text of this proposal.
+An proof-of-concept PR of the polyfill changes required for this proposal (stacked on the Temporal polyfill) is here: https://github.com/tc39/proposal-canonical-tz/pull/1
 
 A few performance-related notes:
 
 - Storing user-input identifier strings is not necessary because identifiers are case-normalized by `GetCanonicalTimeZoneIdentifier` before storing.
   There are fewer than 600 identifiers, so built-in time zone identifiers could be stored as a 2-byte (or even 10-bit) indexes into a ~9KB array of ASCII strings.
-- This change WOULD NOT require storing both original and canonical IDs in each `TimeZone` and `ZonedDateTime` instance.
-  Implementations could choose to do this for ease of implementation, but they can also save a few bytes per object by canonicalizing just-in-time via a 2.3KB map of each identifier's index to its corresponding Zone's identifier's index.
+- This proposal WOULD NOT require storing both original and canonical ID indexes in each `TimeZone`, `ZonedDateTime`, and `Intl.DateTimeFormat` instance.
+  Implementations could choose to do this for ease of implementation, but they can also save 1-2 bytes per instance by canonicalizing just-in-time via a 2.3KB map of each identifier's index to its corresponding Zone's identifier's index.
 
 ### 6. Add `Temporal.TimeZone.prototype.equals`
 
