@@ -26,6 +26,46 @@
         "type": "op",
         "aoid": "ToTemporalTimeZoneIdentifier",
         "id": "sec-totemporaltimezoneidentifier"
+      },
+      {
+        "type": "op",
+        "aoid": "ToTemporalCalendarIdentifier",
+        "id": "sec-totemporalcalendaridentifier"
+      },
+      {
+        "type": "op",
+        "aoid": "CreateTemporalInstant",
+        "id": "sec-createtemporalinstant"
+      },
+      {
+        "type": "op",
+        "aoid": "FormatDateTime",
+        "id": "sec-formatdatetime"
+      },
+      {
+        "type": "op",
+        "aoid": "SystemTimeZoneIdentifier",
+        "id": "sec-systemtimezoneidentifier"
+      },
+      {
+        "type": "op",
+        "aoid": "GetDateTimeFormatPattern",
+        "id": "sec-getdatetimeformatpattern"
+      },
+      {
+        "type": "op",
+        "aoid": "GetOption",
+        "id": "sec-getoption"
+      },
+      {
+        "type": "clause",
+        "number": "Supported fields for Temporal patterns",
+        "id": "table-temporal-patterns"
+      },
+      {
+        "type": "clause",
+        "number": "Temporal.ZonedDateTime.prototype.toLocaleString",
+        "id": "sec-temporal.zoneddatetime.prototype.tolocalestring"
       }
     ]
   }
