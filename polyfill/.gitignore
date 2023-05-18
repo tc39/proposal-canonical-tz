@@ -3,3 +3,5 @@ index.js
 node_modules/
 coverage/
 dist/
+# The lib folder is auto-generated from the Temporal polyfill using build.mjs
+lib/
