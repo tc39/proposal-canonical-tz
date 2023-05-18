@@ -1,15 +1,13 @@
 {
-  "name": "proposal-temporal",
-  "version": "0.9.0",
-  "description": "Experimental polyfill for the TC39 Temporal proposal",
+  "name": "proposal-canonical-tz",
+  "version": "0.1.0",
+  "description": "Non-production polyfill (stacked on Temporal) for the TC39 Time Zone Canonicalization proposal",
   "type": "commonjs",
   "main": "dist/index.js",
   "browser": "dist/index.umd.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "node --loader ./test/resolve.source.mjs ./test/all.mjs",
     "test262": "npm run build262 && node runtest262.mjs",
-    "codecov:test262": "./ci_codecov_test262.sh",
     "build": "rollup -c rollup.config.js --bundleConfigAsCjs",
     "build262": "TEST262=1 rollup -c rollup.config.js --bundleConfigAsCjs",
     "prepublishOnly": "npm run build",
@@ -17,43 +15,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tc39/proposal-temporal.git",
+    "url": "git+https://github.com/tc39/proposal-canonical-tz.git",
     "directory": "polyfill"
   },
-  "keywords": [
-    "Calendar",
-    "Date",
-    "DateTime",
-    "Duration",
-    "Instant",
-    "MonthDay",
-    "Polyfill",
-    "TC39",
-    "Temporal",
-    "Time",
-    "Timestamp",
-    "TimeZone",
-    "YearMonth"
-  ],
-  "author": "Philipp Dunkel <pip@pipobscure.com>",
+  "author": "Justin Grant <justingrant@justingrant@users.noreply.github.com>",
   "contributors": [
-    "Daniel Ehrenberg",
-    "Jason Williams",
     "Justin Grant",
-    "Maggie Johnson-Pint",
-    "Matt Johnson-Pint",
-    "Ms2ger",
-    "Philip Chimento",
-    "Philipp Dunkel",
-    "Sasha Pierson",
-    "Shane F. Carr",
-    "Ujjwal Sharma"
+    "Richard Gibson"
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tc39/proposal-temporal/issues"
+    "url": "https://github.com/tc39/proposal-canonical-tz/issues"
   },
-  "homepage": "https://tc39.es/proposal-temporal/docs/index.html",
+  "homepage": "https://github.com/tc39/proposal-canonical-tz/",
   "files": [
     "index.d.ts",
     "dist",

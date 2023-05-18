@@ -14,6 +14,7 @@ jobs:
         with:
           node-version: 19.x
       - run: npm ci
-      - run: npm run test-demitasse
+      # replace with Test262 when ready
+      # - run: npm run test-demitasse
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
