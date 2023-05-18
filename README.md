@@ -179,7 +179,7 @@ Even without making any normative changes, we can simplify the specs quite a bit
 In the process, we can reduce the delta required for the proposed normative changes.
 The current plan is to make these editorial changes in the next month or two while Temporal is still in Stage 3.
 
-**`AvailableTimeZoneIdentifiers()`** - Rename of [Temporal AvailableTimeZones](https://tc39.es/proposal-temporal/#sec-availabletimezones).
+**`AvailableNamedTimeZoneIdentifiers()`** - Rename of [Temporal AvailableTimeZones](https://tc39.es/proposal-temporal/#sec-availabletimezones).
 Change the returned value from an implementation-defined List of Strings to an implementation-defined List of Records, each composed of:
 
 - `[[Identifier]]`: identifier in the IANA TZDB
@@ -188,10 +188,10 @@ Change the returned value from an implementation-defined List of Strings to an i
 This AO would be the **only** implementation-defined AO for time zone identifiers.
 The default implementation would return a one-record List: `« { [[Identifier]]: *"UTC"*, [[CanonicalIdentifier]]: *undefined* } »`.
 
-**`IsAvailableTimeZoneIdentifier(_identifier_)`** - Rename of [Temporal IsAvailableTimeZoneName](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) (which performs case-insensitive searching against AvailableTimeZones() with a minor change to look at `[[Identifier]]`.
+**`IsAvailableNamedTimeZoneIdentifier(_identifier_)`** - Rename of [Temporal IsAvailableTimeZoneName](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) (which performs case-insensitive searching against AvailableTimeZones() with a minor change to look at `[[Identifier]]`.
 Can't throw.
 
-**`GetAvailableTimeZoneIdentifier(_identifier_)`** - Like `IsAvailableTimeZoneIdentifier`, but returns `[[Identifier]]` if there's a case-insensitive match, or `*undefined*` if not matched. Except: if `[[LinkTarget]]` is `*"UTC"*` then return `*"UTC"*`. This AO is new and can be used to fetch a case-normalized identifier. Can't throw.
+**`GetAvailableNamedTimeZoneIdentifier(_identifier_)`** - Like `IsAvailableNamedTimeZoneIdentifier`, but returns `[[Identifier]]` if there's a case-insensitive match, or `*undefined*` if not matched. Except: if `[[LinkTarget]]` is `*"UTC"*` then return `*"UTC"*`. This AO is new and can be used to fetch a case-normalized identifier. Can't throw.
 
 > ISSUE: should we keep the UTC exception here?
 > Currently, UTC is special-cased in the spec, and we expect that a common ECMAScript code pattern will be `if (foo.id === 'UTC') { ... }`.
@@ -200,7 +200,7 @@ Can't throw.
 > So there's not yet a clear answer here.
 > Discussion needed.
 
-**`GetCanonicalTimeZoneIdentifier(_identifier_)`** - Rename of [ECMA-402 CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename), but moved to ECMA-262 and updated to no longer be implementation-defined. Similar implementation to `GetAvailableTimeZoneIdentifier`, but will return `[[LinkTarget]]` when non-empty and `[[Identifier]]` otherwise.
+**`GetCanonicalTimeZoneIdentifier(_identifier_)`** - Rename of [ECMA-402 CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename), but moved to ECMA-262 and updated to no longer be implementation-defined. Similar implementation to `GetAvailableNamedTimeZoneIdentifier`, but will return `[[LinkTarget]]` when non-empty and `[[Identifier]]` otherwise.
 Can't throw.
 
 ## Align spec with implementation behavior
@@ -219,7 +219,7 @@ Specifically, we want to tighten current language like this which AFAICT is wron
 
 There's useful info in [@anba](https://github.com/anba)'s comments [here](https://github.com/tc39/proposal-temporal/issues/2509#issuecomment-1461418026) that could be used as a starting point.
 
-Note that these spec text changes would likely go into `AvailableTimeZoneIdentifiers` (the only implementation-defined AO related to TZDB identifiers) and would be removed from their current home in `GetCanonicalTimeZoneName`.
+Note that these spec text changes would likely go into `AvailableNamedTimeZoneIdentifiers` (the only implementation-defined AO related to TZDB identifiers) and would be removed from their current home in `GetCanonicalTimeZoneName`.
 
 ## Out-of-date canonicalizations in V8/WebKit
 
@@ -268,7 +268,7 @@ Therefore, (6) below proposes a new `TimeZone.prototype.equals` API.
 
 This change requires the following normative edits:
 
-- a) Change `GetCanonicalTimeZoneIdentifier` to `GetAvailableTimeZoneIdentifier` in places where user input identifiers are stored.
+- a) Change `GetCanonicalTimeZoneIdentifier` to `GetAvailableNamedTimeZoneIdentifier` in places where user input identifiers are stored.
 - b) Add `GetCanonicalTimeZoneIdentifier` calls before using identifiers for any other purpose than returning them back to ECMAScript code in `id`, `timeZoneId`, `toString`, and `toJSON`.
 - c) Depending on what TG2 decides, maybe include `resolvedOptions().timeZone` to calls that are exempt from canonicalization. Or we could leave its existing behavior for backwards compatibility.
 
