@@ -5,9 +5,9 @@ This proposal improves developer experience when the canonical identifier of a t
 
 ## Status
 
-This proposal is currently [Stage 1](https://github.com/tc39/proposals/blob/main/stage-1-proposals.md) following the [TC39 process](https://tc39.es/process-document/).
+This proposal is currently [Stage 2](https://github.com/tc39/proposals/tree/main#stage-2) following the [TC39 process](https://tc39.es/process-document/).
 
-Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the upcoming May 2023 TC39 plenary meeting where this proposal's champions will ask to advance this proposal to [Stage 2](https://github.com/tc39/proposals#stage-2).
+Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the May 2023 TC39 plenary meeting where this proposal advanced to [Stage 2](https://github.com/tc39/proposals#stage-2).
 
 Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) from the March 2023 TC39 plenary meeting where this proposal advanced to Stage 1.
 
@@ -18,8 +18,8 @@ This means that this proposal builds on Temporal features, notably the [`Tempora
 
 The specification text for this proposal can be found at https://tc39.es/proposal-canonical-tz.
 
-Currently this spec text is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal.
-This PR is expected to be merged soon.
+Currently this spec text is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal, and another editorial PR ([tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035)) to the ECMA-262 specification.
+These PRs are expected to be merged soon.
 
 ## Champions
 
