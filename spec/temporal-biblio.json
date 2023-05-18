@@ -4,8 +4,8 @@
     "entries": [
       {
         "type": "op",
-        "aoid": "GetAvailableTimeZoneIdentifier",
-        "id": "sec-getavailabletimezoneidentifier"
+        "aoid": "GetAvailableNamedTimeZoneIdentifier",
+        "id": "sec-getavailablenamedtimezoneidentifier"
       },
       {
         "type": "op",

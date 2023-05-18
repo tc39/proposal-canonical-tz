@@ -29,7 +29,7 @@ This PR is expected to be merged soon.
 ## Polyfill
 
 A polyfill is not available yet for this proposal.
-Please ignore the `polyfill` folder, as it contains only placeholder content copied from the Temporal proposal repo.
+Please ignore the `polyfill` folder, as it contains only placeholder code copied from the Temporal proposal repo.
 
 ## Contents
 
@@ -194,12 +194,12 @@ Even without normative changes, we can simplify the specs quite a bit.
 In the process, we can reduce the delta required for the proposed normative changes, the delta between ECMA-262 and ECMA-402 specs, and the delta between Temporal and ECMA 262 specs.
 The main changes are adding two new abstract operations, which will enable all other time-zine-identifier-related functionality in ECMA-262, ECMA-402, and Temporal to be built on top as non-implementation-defined AOs.
 
-**`AvailableTimeZoneIdentifiers()`** - Returns an implementation-defined List of Records, each composed of:
+**`AvailableNamedTimeZoneIdentifiers()`** - Returns an implementation-defined List of Records, each composed of:
 
 - `[[Identifier]]`: identifier in the IANA TZDB
 - `[[PrimaryIdentifier]]`: identifier of transitive IANA Link target (following as many Links as necessary to reach a Zone), with the same special-casing of `"UTC"` as in ECMA-402's [CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename).
 
-**`GetAvailableTimeZoneIdentifier(_identifier_)`** - Filters the result of `AvailableTimeZoneIdentifiers` to return the record where `[[Identifier]]` is an ASCII-case-insensitive match for `_identifier_`, or `~empty~` if there's no match.
+**`GetAvailableNamedTimeZoneIdentifier(_identifier_)`** - Filters the result of `AvailableNamedTimeZoneIdentifiers` to return the record where `[[Identifier]]` is an ASCII-case-insensitive match for `_identifier_`, or `~empty~` if there's no match.
 This AO will:
 
 - Replace `CanonicalizeTimeZoneName` in [Temporal](https://tc39.es/proposal-temporal/#sec-canonicalizetimezonename) and [ECMA-402](https://tc39.es/ecma402/#sec-canonicalizetimezonename) by using the `[[PrimaryIdentifier]]` of the result.
@@ -286,8 +286,8 @@ Therefore, (6) below proposes a new `TimeZone.prototype.equals` API.
 
 This change requires the following normative edits:
 
-- a) Change `GetAvailableTimeZoneIdentifier(id).[[PrimaryIdentifier]]` to `GetAvailableTimeZoneIdentifier(id).[[Identifier]]` in places where user input identifiers are parsed and/or stored.
-- b) Call `GetAvailableTimeZoneIdentifier(id).[[PrimaryIdentifier]]` before using identifiers for purposes that require canonicalization, such as the `TimeZoneEquals` abstract operation.
+- a) Change `GetAvailableNamedTimeZoneIdentifier(id).[[PrimaryIdentifier]]` to `GetAvailableNamedTimeZoneIdentifier(id).[[Identifier]]` in places where user input identifiers are parsed and/or stored.
+- b) Call `GetAvailableNamedTimeZoneIdentifier(id).[[PrimaryIdentifier]]` before using identifiers for purposes that require canonicalization, such as the `TimeZoneEquals` abstract operation.
 
 These changes are described in the spec text of this proposal.
 An proof-of-concept PR of the polyfill changes required for this proposal (stacked on the Temporal polyfill) is here: https://github.com/tc39/proposal-canonical-tz/pull/1
