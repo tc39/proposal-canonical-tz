@@ -12,18 +12,19 @@ These changes are also checked into this repo as [polyfill.diff](./polyfill.diff
 ## Testing this proposal
 
 Test262 tests are available in the [proposal-canonical-tz-tests](https://github.com/justingrant/test262/tree/proposal-canonical-tz-tests) branch of a Test262 fork.
+A draft PR for initial Test262 tests is available at [tc39/test262#3837](https://github.com/tc39/test262/pull/3837), although this PR is not expected to be merged unless this proposal reaches Stage 3.
 The full surface area of this proposal is expected to be covered by Test262 tests by mid-June 2023.
 
 ### Test roadmap
 
-- [x] Add lightweight "Demitasse" tests in [test/canonicaltz.mjs](./test/canonicaltz.mjs) that cover this proposal's full surface area
-- [x] Fix 15 existing Test262 tests that were broken by this proposal, because they assumed that time zone identifiers are always canonicalized
+- [x] DONE Add lightweight "Demitasse" tests in [test/canonicaltz.mjs](./test/canonicaltz.mjs) that cover this proposal's full surface area
+- [x] DONE Fix 15 existing Test262 tests that were broken by this proposal, because they assumed that time zone identifiers are always canonicalized
+- [x] DONE Open a Test262 draft PR
 - [ ] Migrate `Temporal.TimeZone.p.equals` (the only new API in this proposal) Demitasse tests to Test262
 - [ ] Migrate `Temporal.TimeZone` Demitasse tests to Test262
-- [ ] Migrate `Temporal.ZonedDateTime`Demitasse tests to Test262
+- [ ] Migrate `Temporal.ZonedDateTime` Demitasse tests to Test262
 - [ ] Migrate `Intl.DateTimeFormat` Demitasse tests to Test262
 - [ ] Remove Demitasse tests from this repo and from CI workflows
-- [ ] Open a Test262 PR to get these tests into the staging directory
 
 ### How to run tests
 
