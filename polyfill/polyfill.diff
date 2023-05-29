@@ -91,9 +91,9 @@ index 4cd381c0..d8abd52f 100644
  
      const formatter = new DateTimeFormat(locales, optionsCopy);
 diff --git a/polyfill/test262 b/polyfill/test262
-index 3e858ef0..3312e697 160000
+index 3e858ef0..be8f7e90 160000
 --- a/polyfill/test262
 +++ b/polyfill/test262
 @@ -1 +1 @@
 -Subproject commit 3e858ef02d2eda1e1e7eeff89ad7deeaf99d2766
-+Subproject commit 3312e6973ce138982b3235b2c5fc4eab65912780
++Subproject commit be8f7e90217da86f3949d8ece80dc5ae3d990165
