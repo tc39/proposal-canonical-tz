@@ -30,6 +30,8 @@
     "build:spec": "ecmarkup --lint-spec --strict --load-biblio @tc39/ecma262-biblio spec.html out/index.html",
     "pretty": "eslint . --ext js,mjs,.d.ts --fix",
     "build": "npm run build:polyfill && npm run build:spec",
+    "refresh-polyfill": "./refresh_polyfill_code.sh",
+    "refresh-polyfill-ci": "CI=1 ./refresh_polyfill_code.sh",
     "update": "./update_deps.sh"
   },
   "repository": {

@@ -14,7 +14,23 @@ jobs:
         with:
           node-version: 19.x
       - run: npm ci
-      # replace with Test262 when ready
-      # - run: npm run test-demitasse
+      - run: npm run refresh-polyfill-ci
+      - run: npm run test-demitasse
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+  test-test262:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        # we set up submidules manually in npm run refresh-polyfill-ci
+        #        with:
+        #          submodules: true
+      - name: use node.js v19.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.x
+      - run: npm ci
+      - run: npm run refresh-polyfill-ci
+      - run: npm run test262
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}

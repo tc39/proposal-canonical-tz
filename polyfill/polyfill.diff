@@ -1,0 +1,99 @@
+diff --git a/.gitmodules b/.gitmodules
+index 1c6831c7..73008e46 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -1,3 +1,4 @@
+ [submodule "polyfill/test262"]
+ 	path = polyfill/test262
+-	url = https://github.com/tc39/test262
++	url = https://github.com/justingrant/test262
++	branch = proposal-canonical-tz-tests
+diff --git a/polyfill/lib/ecmascript.mjs b/polyfill/lib/ecmascript.mjs
+index aa3f2ba7..ff920c83 100644
+--- a/polyfill/lib/ecmascript.mjs
++++ b/polyfill/lib/ecmascript.mjs
+@@ -370,7 +370,7 @@ export function ParseTemporalTimeZone(stringIdent) {
+     if (IsTimeZoneOffsetString(tzName)) return CanonicalizeTimeZoneOffsetString(tzName);
+     const record = GetAvailableNamedTimeZoneIdentifier(tzName);
+     if (!record) throw new RangeError(`Unrecognized time zone ${tzName}`);
+-    return record.primaryIdentifier;
++    return record.identifier;
+   }
+   if (z) return 'UTC';
+   // if !tzName && !z then offset must be present
+@@ -2118,7 +2118,16 @@ export function TimeZoneEquals(one, two) {
+   if (one === two) return true;
+   const tz1 = ToTemporalTimeZoneIdentifier(one);
+   const tz2 = ToTemporalTimeZoneIdentifier(two);
+-  return tz1 === tz2;
++  if (tz1 === tz2) return true;
++  if (IsTimeZoneOffsetString(tz1)) {
++    if (!IsTimeZoneOffsetString(tz2)) return false;
++    return CanonicalizeTimeZoneOffsetString(tz1) === CanonicalizeTimeZoneOffsetString(tz2);
++  }
++  const idRecord1 = GetAvailableNamedTimeZoneIdentifier(tz1);
++  if (!idRecord1) return false;
++  const idRecord2 = GetAvailableNamedTimeZoneIdentifier(tz2);
++  if (!idRecord2) return false;
++  return idRecord1.primaryIdentifier === idRecord2.primaryIdentifier;
+ }
+ 
+ export function TemporalDateTimeToDate(dateTime) {
+diff --git a/polyfill/lib/intl.mjs b/polyfill/lib/intl.mjs
+index 861762ce..4870d3d1 100644
+--- a/polyfill/lib/intl.mjs
++++ b/polyfill/lib/intl.mjs
+@@ -107,7 +107,7 @@ export function DateTimeFormat(locale = undefined, options = undefined) {
+     }
+     const record = ES.GetAvailableNamedTimeZoneIdentifier(id);
+     if (!record) throw new RangeError(`Intl.DateTimeFormat formats built-in time zones, not ${id}`);
+-    this[TZ_ORIGINAL] = record.primaryIdentifier;
++    this[TZ_ORIGINAL] = record.identifier;
+   }
+ }
+ 
+diff --git a/polyfill/lib/timezone.mjs b/polyfill/lib/timezone.mjs
+index 9796e980..eb957267 100644
+--- a/polyfill/lib/timezone.mjs
++++ b/polyfill/lib/timezone.mjs
+@@ -32,7 +32,7 @@ export class TimeZone {
+     } else {
+       const record = ES.GetAvailableNamedTimeZoneIdentifier(stringIdentifier);
+       if (!record) throw new RangeError(`Invalid time zone identifier: ${stringIdentifier}`);
+-      stringIdentifier = record.primaryIdentifier;
++      stringIdentifier = record.identifier;
+     }
+     CreateSlots(this);
+     SetSlot(this, TIMEZONE_ID, stringIdentifier);
+@@ -50,6 +50,11 @@ export class TimeZone {
+     if (!ES.IsTemporalTimeZone(this)) throw new TypeError('invalid receiver');
+     return GetSlot(this, TIMEZONE_ID);
+   }
++  equals(other) {
++    if (!ES.IsTemporalTimeZone(this)) throw new TypeError('invalid receiver');
++    const timeZoneSlotValue = ES.ToTemporalTimeZoneSlotValue(other);
++    return ES.TimeZoneEquals(this, timeZoneSlotValue);
++  }
+   getOffsetNanosecondsFor(instant) {
+     if (!ES.IsTemporalTimeZone(this)) throw new TypeError('invalid receiver');
+     instant = ES.ToTemporalInstant(instant);
+diff --git a/polyfill/lib/zoneddatetime.mjs b/polyfill/lib/zoneddatetime.mjs
+index 4cd381c0..d8abd52f 100644
+--- a/polyfill/lib/zoneddatetime.mjs
++++ b/polyfill/lib/zoneddatetime.mjs
+@@ -479,7 +479,7 @@ export class ZonedDateTime {
+     } else {
+       const record = ES.GetAvailableNamedTimeZoneIdentifier(timeZoneIdentifier);
+       if (!record) throw new RangeError(`toLocaleString formats built-in time zones, not ${timeZoneIdentifier}`);
+-      optionsCopy.timeZone = record.primaryIdentifier;
++      optionsCopy.timeZone = record.identifier;
+     }
+ 
+     const formatter = new DateTimeFormat(locales, optionsCopy);
+diff --git a/polyfill/test262 b/polyfill/test262
+index 3e858ef0..3312e697 160000
+--- a/polyfill/test262
++++ b/polyfill/test262
+@@ -1 +1 @@
+-Subproject commit 3e858ef02d2eda1e1e7eeff89ad7deeaf99d2766
++Subproject commit 3312e6973ce138982b3235b2c5fc4eab65912780
