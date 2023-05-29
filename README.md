@@ -28,8 +28,10 @@ These PRs are expected to be merged soon.
 
 ## Polyfill
 
-A polyfill is not available yet for this proposal.
-Please ignore the `polyfill` folder, as it contains only placeholder code copied from the Temporal proposal repo.
+A non-production, for-testing-only polyfill for this proposal is available.
+Like this proposal's spec text, the polyfill is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal.
+Tests are also available for this proposal, covering its entire surface area.
+See the [`polyfill README`](./polyfill/README.md) for more information.
 
 ## Contents
 
