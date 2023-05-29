@@ -4,24 +4,36 @@ This polyfill is only for testing the TC39 [Time Zone Canonicalization proposal]
 The sole purpose of this polyfill is to run [Test262](https://github.com/tc39/test262) tests.
 DO NOT use it in production!
 
-This proposal's polyfill is stacked on top of the [Temporal for-testing-only polyfill](https://github.com/tc39/proposal-temporal).
+Like this proposal's spec text, the polyfill is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal.
 
-For ease of development, this proposal's polyfill code lives in the [canonical-tz-polyfill](https://github.com/tc39/proposal-temporal/commits/canonical-tz-polyfill) branch of the Temporal proposal repo.
-This proposal's polyfill changes are the top commit in that branch.
-
-The <20 lines of changes that this proposal makes to the Temporal polyfill can be found in the [polyfill.diff](./polyfill.diff) in the same directory as this README file.
+For ease of development, this proposal's polyfill changes&mdash;about 20 lines&mdash;live in a single commit at the top of the [canonical-tz-polyfill](https://github.com/tc39/proposal-temporal/commits/canonical-tz-polyfill) branch of the Temporal proposal repo.
+These changes are also checked into this repo as [polyfill.diff](./polyfill.diff) in the same directory as this README.
 
 ## Testing this proposal
 
-Some Test262 tests are available for this proposal, and more are being added soon.
+Test262 tests are available in the [proposal-canonical-tz-tests](https://github.com/justingrant/test262/tree/proposal-canonical-tz-tests) branch of a Test262 fork.
 The full surface area of this proposal is expected to be covered by Test262 tests by mid-June 2023.
-Lightweight "Demitasse" tests are in [test/canonicaltz.mjs](./test/canonicaltz.mjs).
-These tests already cover this proposal's full surface area, and are in the process of being migrated to Test262.
-Once the Test262 migration is complete, these interim tests will be removed.
+
+### Test roadmap
+
+- [x] Add lightweight "Demitasse" tests in [test/canonicaltz.mjs](./test/canonicaltz.mjs) that cover this proposal's full surface area
+- [x] Fix 15 existing Test262 tests that were broken by this proposal, because they assumed that time zone identifiers are always canonicalized
+- [ ] Migrate `Temporal.TimeZone.p.equals` (the only new API in this proposal) Demitasse tests to Test262
+- [ ] Migrate `Temporal.TimeZone` Demitasse tests to Test262
+- [ ] Migrate `Temporal.ZonedDateTime`Demitasse tests to Test262
+- [ ] Migrate `Intl.DateTimeFormat` Demitasse tests to Test262
+- [ ] Remove Demitasse tests from this repo and from CI workflows
+- [ ] Open a Test262 PR to get these tests into the staging directory
+
+### How to run tests
 
 Before running tests, the polyfill code from the proposal-temporal branch linked above must be copied into the `lib` folder.
 To do this, use `npm run refresh-polyfill` from the root of this repo.
 This script will also regenerate `polyfill.diff`, which should be checked in after any polyfill changes are pushed.
+
+Once the polyfill code is copied, use `npm test` to run tests.
+To validate that this proposal doesn't break anything in Temporal, all 6000+ Temporal tests are run in addition to tests added or changed by this proposal.
+It takes 1-2 minutes on a fast machine to run all these tests using [`@js-temporal/temporal-test262-runner`](https://www.npmjs.com/package/@js-temporal/temporal-test262-runner).
 
 In CI, `npm run refresh-polyfill-ci` must be run before running tests. This script acts the same as `npm run refresh-polyfill` except:
 * If `polyfill.diff` is out of date, it fails with an error because we don't want PRs to be merged with an outdated polyfill diff
