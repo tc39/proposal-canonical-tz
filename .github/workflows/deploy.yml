@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 19.x
       - run: npm ci
-      - run: npm run build
+      - run: npm run build:spec
       - uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
