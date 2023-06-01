@@ -28,11 +28,11 @@ The full surface area of this proposal is expected to be covered by Test262 test
 
 ### How to run tests
 
-Before running tests, the polyfill code from the proposal-temporal branch linked above must be copied into the `lib` folder.
+Before running tests, the polyfill code from the proposal-temporal branch linked above must be current in the `temporal` submodule in this repo.
 To do this, use `npm run refresh-polyfill` from the root of this repo.
 This script will also regenerate `polyfill.diff`, which should be checked in after any polyfill changes are pushed.
 
-Once the polyfill code is copied, use `npm test` to run tests.
+Once the polyfill code is updated, use `npm test` to run tests.
 To validate that this proposal doesn't break anything in Temporal, all 6000+ Temporal tests are run in addition to tests added or changed by this proposal.
 It takes 1-2 minutes on a fast machine to run all these tests using [`@js-temporal/temporal-test262-runner`](https://www.npmjs.com/package/@js-temporal/temporal-test262-runner).
 
