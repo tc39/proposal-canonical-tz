@@ -10,5 +10,6 @@ jobs:
         with:
           node-version: 19.x
       - run: npm ci
+      - run: npm run refresh-polyfill-ci
       - run: npm run lint
       - run: npm run build:spec

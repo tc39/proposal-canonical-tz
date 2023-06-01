@@ -20,12 +20,12 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "test": "cd polyfill && npm install && npm test && npm run test262",
-    "codecov:test262": "cd polyfill && npm install && npm run codecov:test262",
-    "test-demitasse": "cd polyfill && npm install && npm run test",
-    "test262": "cd polyfill && npm install && npm run test262",
-    "lint": "eslint . --ext js,mjs,.d.ts --max-warnings 0 --cache",
-    "build:polyfill": "cd polyfill && npm install && npm run build",
+    "test": "cd temporal/polyfill && npm install && npm test && npm run test262",
+    "codecov:test262": "cd temporal/polyfill && npm install && npm run codecov:test262",
+    "test-demitasse": "cd temporal/polyfill && npm install && npm run test",
+    "test262": "cd temporal/polyfill && npm install && npm run test262",
+    "lint": "cd temporal && npm run lint",
+    "build:polyfill": "cd temporal/polyfill && npm install && npm run build",
     "prebuild:spec": "mkdirp out",
     "build:spec": "ecmarkup --lint-spec --strict --load-biblio @tc39/ecma262-biblio spec.html out/index.html",
     "pretty": "eslint . --ext js,mjs,.d.ts --fix",

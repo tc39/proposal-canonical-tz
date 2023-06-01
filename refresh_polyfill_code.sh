@@ -1,15 +1,11 @@
 #!/bin/bash
 
-rm -rf polyfill/lib
-mkdir polyfill/lib
-
 # Get latest contents of canonical-tz-polyfill branch of proposal-temporal
-git submodule update --init --remote --force
-cp temporal/polyfill/lib/* polyfill/lib
+git submodule update --init --remote --force --recursive
 
 # Regenerate the patch file of the (few) changes in this proposal's polyfill
+# The polyfill changes are in one commit at HEAD of the submodule's branch.
 cd temporal
-# TODO: what if there's more than one commit?
 git diff HEAD~1 > ../polyfill/polyfill.diff
 cd ..
 
@@ -23,7 +19,8 @@ if [ -n "$CI" ]; then
     echo "2. Commit the new polyfill/polyfill.diff"
     exit 1
   fi
-else 
-  cd polyfill
+else
+  # When running outside CI, validate that the polyfill still builds
+  cd tenporal/polyfill
   npm run build
 fi
