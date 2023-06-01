@@ -9,8 +9,18 @@
       },
       {
         "type": "op",
-        "aoid": "FormatTimeZoneOffsetString",
-        "id": "sec-formattimezoneoffsetstring"
+        "aoid": "AvailableNamedTimeZoneIdentifiers",
+        "id": "sec-availablenamedtimezoneidentifiers"
+      },
+      {
+        "type": "op",
+        "aoid": "Time Zone Identifier Record",
+        "id": "sec-time-zone-identifier-record"
+      },
+      {
+        "type": "op",
+        "aoid": "CanonicalizeTimeZoneOffsetString",
+        "id": "sec-canonicalizetimezoneoffsetstring"
       },
       {
         "type": "op",
@@ -56,6 +66,11 @@
         "type": "op",
         "aoid": "GetOption",
         "id": "sec-getoption"
+      },
+      {
+        "type": "op",
+        "aoid": "SortStringListByCodeUnit",
+        "id": "sec-sortstringlistbycodeunit"
       },
       {
         "type": "clause",

@@ -4,16 +4,6 @@
     "entries": [
       {
         "type": "op",
-        "aoid": "AvailableNamedTimeZoneIdentifiers",
-        "id": "sec-availablenamedtimezoneidentifiers"
-      },
-      {
-        "type": "op",
-        "aoid": "Time Zone Identifier Record",
-        "id": "sec-time-zone-identifier-record"
-      },
-      {
-        "type": "op",
         "aoid": "CanonicalizeLocaleList",
         "id": "sec-canonicalizelocalelist"
       },
