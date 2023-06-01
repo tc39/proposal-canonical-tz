@@ -7,7 +7,7 @@
   <emu-note type="editor">
     <p>
       This section lists amendments which must be made to <a href="https://tc39.es/ecma262/">ECMA-262, the ECMAScript® 2024 Language Specification</a>.
-      The changes below are limited to the SystemTimeZoneIdentifier abstract operation, the %Temporal.TimeZone% built-in object, and the abstract operations related to that object.
+      The changes below are limited to the SystemTimeZoneIdentifier and AvailableNamedTimeZoneIdentifiers abstract operations, the %Temporal.TimeZone% built-in object, and the abstract operations related to that object.
       Text to be added is marked <ins>like this</ins>, and text to be deleted is marked <del>like this</del>.
     </p>
     <p>
@@ -27,6 +27,7 @@
     <emu-alg>
       1. If the implementation only supports the UTC time zone, return *"UTC"*.
       1. Let _systemTimeZoneString_ be the String representing the host environment's current time zone, either a named time zone identifier or a UTC offset string.
+      1. <ins>Assert: _systemTimeZoneString_ is *"Etc/Unknown"* if the host environment's current time zone cannot be determined or is unrecognized by the ECMAScript implementation.</ins>
       1. If IsTimeZoneOffsetString(_systemTimeZoneString_) is *true*, return <del>_systemTimeZoneString_</del><ins>CanonicalizeTimeZoneOffsetString(_systemTimeZoneString_)</ins>.
       1. Assert: _systemTimeZoneString_ is the value of the [[PrimaryIdentifier]] field of at least one Time Zone Identifier Record returned by AvailableNamedTimeZoneIdentifiers().
       1. Return _systemTimeZoneString_.
@@ -39,6 +40,73 @@
       </p>
       <p>For example, if the host environment is a browser on a system where the user has chosen US Eastern Time as their time zone, SystemTimeZoneIdentifier returns *"America/New_York"*.</p>
     </emu-note>
+
+    <ins class="block">
+    <emu-clause id="sec-unknown-time-zone">
+      <h1>Unknown Time Zone</h1>
+
+      <p>
+        ECMAScript implementations must make a best effort in SystemTimeZoneIdentifier to return the available named time zone identifier that is most closely associated with the host environment's time zone.
+        However, in some cases the host environment's time zone cannot be determined or is not recognized, for example if the host environment's time zone information is updated with a new identifier that the ECMAScript implementation does not yet include.
+        In those cases, the <dfn>Unknown time zone</dfn> is used.
+        This time zone behaves identically to the UTC time zone, except:
+      </p>
+      <ul>
+        <li>
+          Its identifier is *"Etc/Unknown"*, as defined in <a href="https://www.unicode.org/reports/tr35/tr35.html#Time_Zone_Identifiers">Unicode Technical Standard #35 Part 1 Core, Time Zone Identifiers</a>.
+          *"Etc/Unknown"* must be a primary time zone identifier.
+          For time zone aware implementations, this is the only available named time zone identifier that is not required to exist in the IANA Time Zone Database.
+        </li>
+        <li>
+          An ECMAScript implementation that includes the ECMA-402 Internationalization API is recommended to provide a localized name for the Unknown time zone that is different from the localized name of all other available named time zones.
+        </li>
+      </ul>
+      </p>
+      These differences help programmers and/or end users recognize that a problem exists which may require action to fix, without causing ECMAScript programs to fail whenever SystemTimeZoneIdentifier is called.
+      </p>
+      </p>
+        All implementations that support local political rules for any time zones, including implementations that will never return *"Etc/Unknown*" from SystemTimeZoneIdentifier because they share the host environment's list of available named time zone identifiers, must still accept *"Etc/Unknown"* as an available named time zone identifier, for example in the %Temporal.TimeZone% constructor.
+      </p>
+      <emu-note>
+        <p>
+        </p>
+      </emu-note>
+    </emu-clause>
+  </ins>
+  </emu-clause>
+
+  <emu-clause id="sec-availablenamedtimezoneidentifiers" type="implementation-defined abstract operation">
+    <h1>AvailableNamedTimeZoneIdentifiers ( ): a List of Time Zone Identifier Records</h1>
+    <dl class="header">
+      <dt>description</dt>
+      <dd>
+        Its result describes all available named time zone identifiers in this implementation, as well as the primary time zone identifier corresponding to each available identifier.
+        The List is sorted by [[Identifier]] of each Time Zone Identifier Record.
+      </dd>
+    </dl>
+    <p>
+      Time zone aware implementations, including all implementations that implement the ECMA-402 Internationalization API, must implement the AvailableNamedTimeZoneIdentifiers abstract operation as specified in the ECMA-402 specification.
+      For implementations that are not time zone aware, the following specification is used.
+    </p>
+    <emu-alg>
+      1. If the implementation does not include local political rules for any time zones, then
+        1. Return « the Time Zone Identifier Record { [[Identifier]]: *"UTC"*, [[PrimaryIdentifier]]: *"UTC"* } ».
+      1. Let _identifiers_ be the List of String values representing time zones supported by the implementation.
+      1. Assert: No element of _identifiers_ is an ASCII-case-insensitive match for any other element.
+      1. <ins>Assert: No element of _identifiers_ is an ASCII-case-insensitive match for *"Etc/Unknown"*.</ins>
+      1. <ins>Append *"Etc/Unknown"* to _identifiers_.</ins>
+      1. Set _identifiers_ to SortStringListByCodeUnit(_identifiers_).
+      1. Let _result_ be a new empty List.
+      1. For each element _identifier_ of _identifiers_, do
+        1. Let _primary_ be _identifier_.
+        1. If _identifier_ is a non-primary time zone identifier in this implementation and _identifier_ is <del>not *"UTC"*</del><ins>neither *"UTC"* nor *"Etc/Unknown"*</ins>, then
+          1. Set _primary_ to the primary time zone identifier that _identifier_ resolves to in this implementation.
+          1. NOTE: An implementation may need to resolve _identifier_ iteratively to obtain the primary time zone identifier.
+        1. Let _record_ be the Time Zone Identifier Record { [[Identifier]]: _identifier_, [[PrimaryIdentifier]]: _primary_ }.
+        1. Append _record_ to the end of _result_.
+      1. Assert: One element of _result_ is the Time Zone Identifier Record { [[Identifier]]: *"UTC"*, [[PrimaryIdentifier]]: *"UTC"* }.
+      1. Return _result_.
+    </emu-alg>
   </emu-clause>
 
   <emu-clause id="sec-temporal-timezone-objects">

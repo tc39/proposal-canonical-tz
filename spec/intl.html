@@ -52,6 +52,46 @@
     </p>
   </emu-clause>
 
+  <emu-clause id="sup-availablenamedtimezoneidentifiers" oldids="sec-availabletimezones" type="implementation-defined abstract operation">
+    <h1>AvailableNamedTimeZoneIdentifiers ( ): a List of Time Zone Identifier Records</h1>
+    <dl class="header">
+      <dt>description</dt>
+      <dd>
+        Its result describes all available named time zone identifiers in this implementation, as well as the primary time zone identifier corresponding to each available named time zone identifier.
+        The List is sorted by [[Identifier]] of each Time Zone Identifier Record.
+      </dd>
+      <dt>redefinition</dt>
+      <dd>true</dd>
+    </dl>
+    <emu-alg>
+      1. Let _identifiers_ be a List containing the String value of each Zone or Link name in the IANA Time Zone Database that is supported by the implementation.
+      1. Assert: No element of _identifiers_ is an ASCII-case-insensitive match for any other element.
+      1. Assert: Every element of _identifiers_ identifies a Zone or Link name in the IANA Time Zone Database.
+      1. <ins>Assert: No element of _identifiers_ is an ASCII-case-insensitive match for *"Etc/Unknown"*.</ins>
+      1. <ins>Append *"Etc/Unknown"* to _identifiers_.</ins>
+      1. Set _identifiers_ to SortStringListByCodeUnit(_identifiers_).
+      1. Let _result_ be a new empty List.
+      1. For each element _identifier_ of _identifiers_, do
+        1. Let _primary_ be _identifier_.
+        1. If _identifier_ is a non-primary time zone identifier in this implementation and _identifier_ is <del>not *"UTC"*</del><ins>neither *"UTC"* nor *"Etc/Unknown"*</ins>, then
+          1. Set _primary_ to the name of the primary time zone identifier that _identifier_ resolves to, according to the rules for resolving Link names in the IANA Time Zone Database.
+          1. NOTE: If _identifier_ resolves to another non-primary time zone identifier, then the implementation must continue resolution of the entire chain until its terminal primary time zone identifier.
+        1. If _primary_ is one of *"Etc/UTC"*, *"Etc/GMT"*, or *"GMT"*, set _primary_ to *"UTC"*.
+        1. Let _record_ be the Time Zone Identifier Record { [[Identifier]]: _identifier_, [[PrimaryIdentifier]]: _primary_ }.
+        1. Append _record_ to the end of _result_.
+      1. Assert: One element of _result_ is the Time Zone Identifier Record { [[Identifier]]: *"UTC"*, [[PrimaryIdentifier]]: *"UTC"* }.
+      1. Return _result_.
+    </emu-alg>
+
+    <emu-note>
+      Time zone identifiers in the IANA Time Zone Database can change over time.
+      At a minimum, it is recommended that implementations limit changes to the result of AvailableNamedTimeZoneIdentifiers to the changes allowed by GetAvailableNamedTimeZoneIdentifier, for the lifetime of the surrounding agent.
+      Due to the complexity of supporting these recommendations, it is recommended that the result of AvailableNamedTimeZoneIdentifiers remains the same for the lifetime of the surrounding agent.
+    </emu-note>
+
+    <p>This definition supersedes the definition provided in <emu-xref href="#sec-availablenamedtimezoneidentifiers"></emu-xref>.</p>
+  </emu-clause>
+
   <emu-clause id="sup-temporal.zoneddatetime.prototype.tolocalestring">
     <h1>Temporal.ZonedDateTime.prototype.toLocaleString ( [ _locales_ [ , _options_ ] ] )</h1>
     <p>This definition supersedes the definition provided in <emu-xref href="#sec-temporal.zoneddatetime.prototype.tolocalestring"></emu-xref>.</p>
