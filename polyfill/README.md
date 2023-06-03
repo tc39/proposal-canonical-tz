@@ -20,8 +20,8 @@ The full surface area of this proposal is expected to be covered by Test262 test
 - [x] DONE Add lightweight "Demitasse" tests in [test/canonicaltz.mjs](./test/canonicaltz.mjs) that cover this proposal's full surface area
 - [x] DONE Fix 15 existing Test262 tests that were broken by this proposal, because they assumed that time zone identifiers are always canonicalized
 - [x] DONE Open a Test262 draft PR
-- [ ] Migrate `Temporal.TimeZone.p.equals` (the only new API in this proposal) Demitasse tests to Test262
-- [ ] Migrate `Temporal.TimeZone` Demitasse tests to Test262
+- [x] Migrate `Temporal.TimeZone.p.equals` (the only new API in this proposal) Demitasse tests to Test262
+- [x] Migrate `Temporal.TimeZone` Demitasse tests to Test262
 - [ ] Migrate `Temporal.ZonedDateTime` Demitasse tests to Test262
 - [ ] Migrate `Intl.DateTimeFormat` Demitasse tests to Test262
 - [ ] Remove Demitasse tests from this repo and from CI workflows
