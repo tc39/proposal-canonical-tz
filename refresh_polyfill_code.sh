@@ -21,6 +21,5 @@ if [ -n "$CI" ]; then
   fi
 else
   # When running outside CI, validate that the polyfill still builds
-  cd tenporal/polyfill
   npm run build
 fi
