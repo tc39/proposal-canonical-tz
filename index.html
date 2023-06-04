@@ -2663,17 +2663,17 @@ li.menu-search-result-term:before {
   <emu-clause id="sec-systemtimezoneidentifier" oldids="sec-defaulttimezone" type="implementation-defined abstract operation" aoid="SystemTimeZoneIdentifier"><span id="sec-defaulttimezone"></span>
     <h1><span class="secnum">1.1</span> SystemTimeZoneIdentifier ( )</h1>
     <p>The <emu-xref href="#implementation-defined"><a href="https://tc39.es/ecma262/#implementation-defined">implementation-defined</a></emu-xref> abstract operation SystemTimeZoneIdentifier takes no arguments and returns a String. 
-        It returns a String value representing the environment's current time zone, which is either a String representing a UTC offset for which <emu-xref aoid="IsTimeZoneOffsetString"><a href="https://tc39.es/ecma262/#sec-istimezoneoffsetstring">IsTimeZoneOffsetString</a></emu-xref> returns <emu-val>true</emu-val>, or a primary time zone identifier.
+        It returns a String representing the <emu-xref href="#host-environment"><a href="https://tc39.es/ecma262/#host-environment">host environment</a></emu-xref>'s current time zone, which is either a String representing a UTC offset for which <emu-xref aoid="IsTimeZoneOffsetString"><a href="https://tc39.es/ecma262/#sec-istimezoneoffsetstring">IsTimeZoneOffsetString</a></emu-xref> returns <emu-val>true</emu-val>, or a primary time zone identifier.
        It performs the following steps when called:</p>
 
-    <emu-alg><ol><li>If the implementation only supports the UTC time zone, return <emu-val>"UTC"</emu-val>.</li><li>Let <var>systemTimeZoneString</var> be the String representing the environment's current time zone, either a named time zone identifier or a UTC offset string.</li><li>If <emu-xref aoid="IsTimeZoneOffsetString"><a href="https://tc39.es/ecma262/#sec-istimezoneoffsetstring">IsTimeZoneOffsetString</a></emu-xref>(<var>systemTimeZoneString</var>) is <emu-val>true</emu-val>, return <del><var>systemTimeZoneString</var></del><ins><emu-xref aoid="CanonicalizeTimeZoneOffsetString"><a href="https://tc39.es/proposal-temporal/#sec-temporal-canonicalizetimezoneoffsetstring">CanonicalizeTimeZoneOffsetString</a></emu-xref>(<var>systemTimeZoneString</var>)</ins>.</li><li><emu-xref href="#assert"><a href="https://tc39.es/ecma262/#assert">Assert</a></emu-xref>: <var>systemTimeZoneString</var> is equal to the <var class="field">[[PrimaryIdentifier]]</var> property of at least one <emu-xref aoid="Time Zone Identifier Record"><a href="https://tc39.es/proposal-temporal/#sec-time-zone-identifier-record">Time Zone Identifier Record</a></emu-xref> returned by <emu-xref aoid="AvailableNamedTimeZoneIdentifiers"><a href="https://tc39.es/proposal-temporal/#sec-availablenamedtimezoneidentifiers">AvailableNamedTimeZoneIdentifiers</a></emu-xref>().</li><li>Return <var>systemTimeZoneString</var>.</li></ol></emu-alg>
+    <emu-alg><ol><li>If the implementation only supports the UTC time zone, return <emu-val>"UTC"</emu-val>.</li><li>Let <var>systemTimeZoneString</var> be the String representing the <emu-xref href="#host-environment"><a href="https://tc39.es/ecma262/#host-environment">host environment</a></emu-xref>'s current time zone, either a named time zone identifier or a UTC offset string.</li><li>If <emu-xref aoid="IsTimeZoneOffsetString"><a href="https://tc39.es/ecma262/#sec-istimezoneoffsetstring">IsTimeZoneOffsetString</a></emu-xref>(<var>systemTimeZoneString</var>) is <emu-val>true</emu-val>, return <del><var>systemTimeZoneString</var></del><ins><emu-xref aoid="CanonicalizeTimeZoneOffsetString"><a href="https://tc39.es/proposal-temporal/#sec-temporal-canonicalizetimezoneoffsetstring">CanonicalizeTimeZoneOffsetString</a></emu-xref>(<var>systemTimeZoneString</var>)</ins>.</li><li><emu-xref href="#assert"><a href="https://tc39.es/ecma262/#assert">Assert</a></emu-xref>: <var>systemTimeZoneString</var> is the value of the <var class="field">[[PrimaryIdentifier]]</var> field of at least one <emu-xref aoid="Time Zone Identifier Record"><a href="https://tc39.es/proposal-temporal/#sec-time-zone-identifier-record">Time Zone Identifier Record</a></emu-xref> returned by <emu-xref aoid="AvailableNamedTimeZoneIdentifiers"><a href="https://tc39.es/proposal-temporal/#sec-availablenamedtimezoneidentifiers">AvailableNamedTimeZoneIdentifiers</a></emu-xref>().</li><li>Return <var>systemTimeZoneString</var>.</li></ol></emu-alg>
 
     <emu-note><span class="note">Note</span><div class="note-contents">
       <p>
-        To ensure the level of functionality that implementations commonly provide in the methods of the Date object, it is recommended that SystemTimeZoneIdentifier return an IANA time zone name corresponding to the environment's time zone setting, if such a thing exists.
+        To ensure the level of functionality that implementations commonly provide in the methods of the Date object, it is recommended that SystemTimeZoneIdentifier return an IANA time zone name corresponding to the <emu-xref href="#host-environment"><a href="https://tc39.es/ecma262/#host-environment">host environment</a></emu-xref>'s time zone setting, if such a thing exists.
         <emu-xref aoid="GetNamedTimeZoneEpochNanoseconds"><a href="https://tc39.es/ecma262/#sec-getnamedtimezoneepochnanoseconds">GetNamedTimeZoneEpochNanoseconds</a></emu-xref> and <emu-xref aoid="GetNamedTimeZoneOffsetNanoseconds"><a href="https://tc39.es/ecma262/#sec-getnamedtimezoneoffsetnanoseconds">GetNamedTimeZoneOffsetNanoseconds</a></emu-xref> must reflect the local political rules for standard time and daylight saving time in that time zone, if such rules exist.
       </p>
-      <p>For example, if the environment is a browser on a system where the user has chosen US Eastern Time as their time zone, SystemTimeZoneIdentifier returns <emu-val>"America/New_York"</emu-val>.</p>
+      <p>For example, if the <emu-xref href="#host-environment"><a href="https://tc39.es/ecma262/#host-environment">host environment</a></emu-xref> is a browser on a system where the user has chosen US Eastern Time as their time zone, SystemTimeZoneIdentifier returns <emu-val>"America/New_York"</emu-val>.</p>
     </div></emu-note>
   </emu-clause>
 
@@ -2752,16 +2752,16 @@ li.menu-search-result-term:before {
     </p>
 
     <ins class="block">
-      <p>
-        Although the IANA Time Zone Database maintainers strive for stability, in rare cases identifiers will be renamed.
-        For example, the IANA Time Zone Database's 2022b release added "<emu-val>Europe/Kyiv</emu-val>" as a new Zone and demoted "<emu-val>Europe/Kiev</emu-val>" to be a Link to the new Zone.
-        To reduce disruption from these renaming changes, ECMAScript implementations are encouraged to initially add the new name as a non-primary time zone identifier that resolves to the old primary identifier.
-        Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
-        The recommended waiting period is two years (TODO: may change) after the IANA Time Zone Database release containing the changes.
-        This is long enough to allow most other systems that ECMAScript programs may interact with to "catch up" with the change so that the new zone is recognized.
-        Note that this waiting period should only apply to cases where an existing Zone is replaced by a new Zone name.
-        If an existing Zone and Link are swapped, then no waiting period is recommended.
-      </p>
+    <p>
+      Although the IANA Time Zone Database maintainers strive for stability, in rare cases identifiers will be renamed.
+      For example, the IANA Time Zone Database's 2022b release added "<emu-val>Europe/Kyiv</emu-val>" as a new Zone and demoted "<emu-val>Europe/Kiev</emu-val>" to be a Link to the new Zone.
+      To reduce disruption from these renaming changes, ECMAScript implementations are encouraged to initially add the new name as a non-primary time zone identifier that resolves to the old primary identifier.
+      Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
+      The recommended waiting period is two years (TODO: may change) after the IANA Time Zone Database release containing the changes.
+      This is long enough to allow most other systems that ECMAScript programs may interact with to "catch up" with the change so that the new zone is recognized.
+      Note that this waiting period should only apply to cases where an existing Zone is replaced by a new Zone name.
+      If an existing Zone and Link are swapped, then no waiting period is recommended.
+    </p>
     </ins>
 
     <p>
