@@ -32,16 +32,16 @@
     </p>
 
     <ins class="block">
-      <p>
-        Although the IANA Time Zone Database maintainers strive for stability, in rare cases identifiers will be renamed.
-        For example, the IANA Time Zone Database's 2022b release added "*Europe/Kyiv*" as a new Zone and demoted "*Europe/Kiev*" to be a Link to the new Zone.
-        To reduce disruption from these renaming changes, ECMAScript implementations are encouraged to initially add the new name as a non-primary time zone identifier that resolves to the old primary identifier.
-        Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
-        The recommended waiting period is two years (TODO: may change) after the IANA Time Zone Database release containing the changes.
-        This is long enough to allow most other systems that ECMAScript programs may interact with to "catch up" with the change so that the new zone is recognized.
-        Note that this waiting period should only apply to cases where an existing Zone is replaced by a new Zone name.
-        If an existing Zone and Link are swapped, then no waiting period is recommended.
-      </p>
+    <p>
+      Although the IANA Time Zone Database maintainers strive for stability, in rare cases identifiers will be renamed.
+      For example, the IANA Time Zone Database's 2022b release added "*Europe/Kyiv*" as a new Zone and demoted "*Europe/Kiev*" to be a Link to the new Zone.
+      To reduce disruption from these renaming changes, ECMAScript implementations are encouraged to initially add the new name as a non-primary time zone identifier that resolves to the old primary identifier.
+      Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
+      The recommended waiting period is two years (TODO: may change) after the IANA Time Zone Database release containing the changes.
+      This is long enough to allow most other systems that ECMAScript programs may interact with to "catch up" with the change so that the new zone is recognized.
+      Note that this waiting period should only apply to cases where an existing Zone is replaced by a new Zone name.
+      If an existing Zone and Link are swapped, then no waiting period is recommended.
+    </p>
     </ins>
 
     <p>
