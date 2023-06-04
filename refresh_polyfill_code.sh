@@ -3,7 +3,15 @@
 # Get latest contents of canonical-tz-polyfill branch of proposal-temporal
 git submodule update --init --remote --force --recursive
 
-# Regenerate the patch file of the (few) changes in this proposal's polyfill
+# Submodules were updated to detached heads. Undetach them by switching to the
+# the correct branch for each.
+cd temporal
+git switch canonical-tz-polyfill
+cd polyfill/test262
+git switch proposal-canonical-tz-tests
+cd ../..
+
+# Regenerate the patch file of the (few) changes in this proposal's polyfill.
 # The polyfill changes are in one commit at HEAD of the submodule's branch.
 cd temporal
 git diff HEAD~1 > ../polyfill/polyfill.diff
