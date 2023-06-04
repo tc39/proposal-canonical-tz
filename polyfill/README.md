@@ -22,8 +22,8 @@ The full surface area of this proposal is expected to be covered by Test262 test
 - [x] DONE Open a Test262 draft PR
 - [x] Migrate `Temporal.TimeZone.p.equals` (the only new API in this proposal) Demitasse tests to Test262
 - [x] Migrate `Temporal.TimeZone` Demitasse tests to Test262
-- [ ] Migrate `Temporal.ZonedDateTime` Demitasse tests to Test262
-- [ ] Migrate `Intl.DateTimeFormat` Demitasse tests to Test262
+- [x] Migrate `Temporal.ZonedDateTime` Demitasse tests to Test262
+- [x] Migrate `Intl.DateTimeFormat` Demitasse tests to Test262
 - [ ] Remove Demitasse tests from this repo and from CI workflows
 
 ### How to run tests
