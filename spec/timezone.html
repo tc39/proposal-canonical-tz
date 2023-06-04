@@ -7,13 +7,39 @@
   <emu-note type="editor">
     <p>
       This section lists amendments which must be made to <a href="https://tc39.es/ecma262/">ECMA-262, the ECMAScript® 2024 Language Specification</a>.
-      The changes below are limited to the <code>Temporal.TimeZone</code> built-in object and to the abstract operations related to that object.
+      The changes below are limited to the SystemTimeZoneIdentifier abstract operation, the %Temporal.TimeZone% built-in object, and the abstract operations related to that object.
       Text to be added is marked <ins>like this</ins>, and text to be deleted is marked <del>like this</del>.
     </p>
     <p>
       This text is based on top of the ECMA-262 spec text from <a href="https://github.com/tc39/proposal-temporal/pull/2573">https://github.com/tc39/proposal-temporal/pull/2573</a>.
     </p>
   </emu-note>
+
+  <emu-clause id="sec-systemtimezoneidentifier" oldids="sec-defaulttimezone" type="implementation-defined abstract operation">
+    <h1>SystemTimeZoneIdentifier ( ): a String</h1>
+    <dl class="header">
+      <dt>description</dt>
+      <dd>
+        It returns a String value representing the environment's current time zone, which is either a String representing a UTC offset for which IsTimeZoneOffsetString returns *true*, or a primary time zone identifier.
+      </dd>
+    </dl>
+
+    <emu-alg>
+      1. If the implementation only supports the UTC time zone, return *"UTC"*.
+      1. Let _systemTimeZoneString_ be the String representing the environment's current time zone, either a named time zone identifier or a UTC offset string.
+      1. If IsTimeZoneOffsetString(_systemTimeZoneString_) is *true*, return <del>_systemTimeZoneString_</del><ins>CanonicalizeTimeZoneOffsetString(_systemTimeZoneString_)</ins>.
+      1. Assert: _systemTimeZoneString_ is equal to the [[PrimaryIdentifier]] property of at least one Time Zone Identifier Record returned by AvailableNamedTimeZoneIdentifiers().
+      1. Return _systemTimeZoneString_.
+    </emu-alg>
+
+    <emu-note>
+      <p>
+        To ensure the level of functionality that implementations commonly provide in the methods of the Date object, it is recommended that SystemTimeZoneIdentifier return an IANA time zone name corresponding to the environment's time zone setting, if such a thing exists.
+        GetNamedTimeZoneEpochNanoseconds and GetNamedTimeZoneOffsetNanoseconds must reflect the local political rules for standard time and daylight saving time in that time zone, if such rules exist.
+      </p>
+      <p>For example, if the environment is a browser on a system where the user has chosen US Eastern Time as their time zone, SystemTimeZoneIdentifier returns *"America/New_York"*.</p>
+    </emu-note>
+  </emu-clause>
 
   <emu-clause id="sec-temporal-timezone-objects">
     <h1>Temporal.TimeZone Objects</h1>

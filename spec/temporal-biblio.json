@@ -20,7 +20,7 @@
       {
         "type": "op",
         "aoid": "CanonicalizeTimeZoneOffsetString",
-        "id": "sec-canonicalizetimezoneoffsetstring"
+        "id": "sec-temporal-canonicalizetimezoneoffsetstring"
       },
       {
         "type": "op",
