@@ -9,7 +9,7 @@ cd temporal
 git switch canonical-tz-polyfill
 cd polyfill/test262
 git switch proposal-canonical-tz-tests
-cd ../..
+cd ../../..
 
 # Regenerate the patch file of the (few) changes in this proposal's polyfill.
 # The polyfill changes are in one commit at HEAD of the submodule's branch.
