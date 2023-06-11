@@ -52,16 +52,16 @@ index adbb9d2e..47803e67 100644
  
  export function TemporalDateTimeToDate(dateTime) {
 diff --git a/polyfill/lib/intl.mjs b/polyfill/lib/intl.mjs
-index 861762ce..4870d3d1 100644
+index e3c6a403..4870d3d1 100644
 --- a/polyfill/lib/intl.mjs
 +++ b/polyfill/lib/intl.mjs
-@@ -107,7 +107,7 @@ export function DateTimeFormat(locale = undefined, options = undefined) {
-     }
-     const record = ES.GetAvailableNamedTimeZoneIdentifier(id);
-     if (!record) throw new RangeError(`Intl.DateTimeFormat formats built-in time zones, not ${id}`);
--    this[TZ_ORIGINAL] = record.primaryIdentifier;
-+    this[TZ_ORIGINAL] = record.identifier;
-   }
+@@ -139,7 +139,7 @@ Object.defineProperty(DateTimeFormat, 'prototype', {
+ 
+ function resolvedOptions() {
+   const resolved = this[ORIGINAL].resolvedOptions();
+-  resolved.timeZone = this[TZ_CANONICAL];
++  resolved.timeZone = this[TZ_ORIGINAL];
+   return resolved;
  }
  
 diff --git a/polyfill/lib/timezone.mjs b/polyfill/lib/timezone.mjs
@@ -102,32 +102,6 @@ index 1a593c7f..06de9d5f 100644
      }
  
      const formatter = new DateTimeFormat(locales, optionsCopy);
-diff --git a/polyfill/package.json b/polyfill/package.json
-index 0cc84100..94128825 100644
---- a/polyfill/package.json
-+++ b/polyfill/package.json
-@@ -10,7 +10,7 @@
-     "test": "node --loader ./test/resolve.source.mjs ./test/all.mjs",
-     "test-cookbook": "npm run build && TEST=all npm run test-cookbook-one && TEST=stockExchangeTimeZone npm run test-cookbook-one",
-     "test-cookbook-one": "node --loader ./test/resolve.cookbook.mjs ../docs/cookbook/$TEST.mjs",
--    "test262": "npm run build262 && TIMEOUT=30000 node runtest262.mjs",
-+    "test262": "npm run build262 && node runtest262.mjs",
-     "codecov:test262": "./ci_codecov_test262.sh",
-     "build": "rollup -c rollup.config.js --bundleConfigAsCjs",
-     "build262": "TEST262=1 rollup -c rollup.config.js --bundleConfigAsCjs",
-diff --git a/polyfill/runtest262.mjs b/polyfill/runtest262.mjs
-index e944bb6f..f4d90ecd 100644
---- a/polyfill/runtest262.mjs
-+++ b/polyfill/runtest262.mjs
-@@ -4,7 +4,7 @@ const result = runTest262({
-   test262Dir: 'test262',
-   polyfillCodeFile: 'script.js',
-   expectedFailureFiles: ['test/expected-failures.txt'],
--  timeoutMsecs: process.env.TIMEOUT,
-+  timeoutMsecs: process.env.TIMEOUT || 30000,
-   testGlobs: process.argv.slice(2)
- });
- 
 diff --git a/polyfill/test262 b/polyfill/test262
 index 3e858ef0..041e65e3 160000
 --- a/polyfill/test262
