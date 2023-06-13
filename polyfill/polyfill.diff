@@ -21,7 +21,7 @@ index 244067cb..d4b6f741 100644
      getOffsetStringFor(instant: Temporal.Instant | string): string;
      getPlainDateTimeFor(instant: Temporal.Instant | string, calendar?: CalendarLike): Temporal.PlainDateTime;
 diff --git a/polyfill/lib/ecmascript.mjs b/polyfill/lib/ecmascript.mjs
-index adbb9d2e..47803e67 100644
+index 25d54d96..8359e4a0 100644
 --- a/polyfill/lib/ecmascript.mjs
 +++ b/polyfill/lib/ecmascript.mjs
 @@ -371,7 +371,7 @@ export function ParseTemporalTimeZone(stringIdent) {
