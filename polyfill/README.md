@@ -11,8 +11,7 @@ These changes are also checked into this repo as [polyfill.diff](./polyfill.diff
 
 ## Testing this proposal
 
-Test262 tests are available in the [proposal-canonical-tz-tests](https://github.com/justingrant/test262/tree/proposal-canonical-tz-tests) branch of a Test262 fork.
-Test262 tests covering (I think!) the full surface area of this proposal are available at [tc39/test262#3837](https://github.com/tc39/test262/pull/3837), although this PR is not expected to be merged unless this proposal reaches Stage 3.
+Test262 tests are available at [tc39/test262#3837](https://github.com/tc39/test262/pull/3837), although this PR is not expected to be merged unless this proposal reaches Stage 3.
 
 ### Test roadmap
 
