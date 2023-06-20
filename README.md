@@ -7,31 +7,33 @@ This proposal improves developer experience when the canonical identifier of a t
 
 This proposal is currently [Stage 2](https://github.com/tc39/proposals/tree/main#stage-2) following the [TC39 process](https://tc39.es/process-document/).
 
-Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the May 2023 TC39 plenary meeting where this proposal advanced to [Stage 2](https://github.com/tc39/proposals#stage-2).
+This proposal's champions are planning to ask for Stage 3 at the upcoming TC39 meeting in July 2023.
+Stage 3 reviewers are: Philip Chimento ([@ptomato](https://github.com/ptomato)), Daniel Minor ([@dminor](https://github.com/dminor)), and Jordan Harband ([@ljharb](https://github.com/ljharb)).
+
+Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the May 2023 TC39 plenary meeting where this proposal advanced to Stage 2.
 
 Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) from the March 2023 TC39 plenary meeting where this proposal advanced to Stage 1.
 
-This proposal's specification is "stacked" on top of the [Temporal proposal](https://github.com/tc39/proposal-temporal).
-This means that this proposal builds on Temporal features, notably the [`Temporal.TimeZone`](https://tc39.es/proposal-temporal/docs/timezone.html) built-in object.
+This proposal's specification is "stacked" on top of the [Temporal proposal](https://github.com/tc39/proposal-temporal), because this proposal builds on Temporal features, especially the [`Temporal.TimeZone`](https://tc39.es/proposal-temporal/docs/timezone.html) built-in object.
 
 ## Specification
 
 The specification text for this proposal can be found at https://tc39.es/proposal-canonical-tz.
-
-Currently this spec text is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal, and another editorial PR ([tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035)) to the ECMA-262 specification.
-These PRs are expected to be merged soon.
+This proposal's spec changes are narrow: about 15 lines of spec text changes (mostly one-line changes in existing abstract operations), plus one prose paragraph.
 
 ## Champions
 
 - Justin Grant ([@justingrant](https://github.com/justingrant))
 - Richard Gibson ([@gibson042](https://github.com/gibson042/))
 
+## Tests
+
+Test262 tests covering this proposal's entire surface area are available at https://github.com/tc39/test262/pull/3837.
+
 ## Polyfill
 
-A non-production, for-testing-only polyfill for this proposal is available.
-Like this proposal's spec text, the polyfill is stacked on top of an editorial PR ([tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)) to the Temporal proposal.
-Tests are also available for this proposal, covering its entire surface area.
-See the [`polyfill README`](./polyfill/README.md) for more information.
+A non-production, for-testing-only polyfill is available.
+This proposal's polyfill is stacked on the Temporal proposal's non-production, test-only polyfill. See this proposal's [`polyfill README`](./polyfill/README.md) for more information.
 
 ## Contents
 
@@ -157,15 +159,15 @@ Steps below are designed to be "severable"; if blocked due to implementation com
 
 ### Reduce variation between implementations, and between implementations and spec
 
-1. **[Simplify abstract operations](#1-Editorial-cleanup-of-identifier-related-Abstract-Operations)** dealing with time zone identifiers. (editorial only)
-2. **[Clarify spec](#2-Clarify-spec-to-prevent-more-divergence)** to prevent more divergence
-3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#3-Fix-out-of-date-canonicalizations-in-V8WebKit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
+1. **[DONE - Simplify abstract operations](#1-done---editorial-cleanup-of-identifier-related-terms-and-abstract-operations)** dealing with time zone identifiers.
+2. **[DONE - Clarify spec](#2-done---clarify-spec-to-prevent-more-divergence)** to prevent more divergence
+3. **[Help V8 and WebKit update 13 out-of-date canonicalizations](#3-fix-out-of-date-canonicalizations-in-v8webkit)** like `Asia/Calcutta`, `Europe/Kiev`, and `Asia/Saigon` before wide Temporal adoption makes this painful. (no spec text required)
 4. [**Prescriptive spec text to reduce divergence between implementations.**](#4-prescriptive-spec-text-to-reduce-divergence-between-implementations)
    This step requires finding common ground between implementers as well as TG2 (the ECMA-402 team) about how canonicalization should work.
 
 ### Reduce impact of canonicalization changes
 
-5. [**Avoid observable following of Links.**](#5-Defer-Link-traversing-canonicalization)
+5. [**Avoid observable following of Links.**](#5-defer-link-traversing-canonicalization)
    If canonicalization changes don't affect existing code, then it's much less likely for future canonicalization changes to break the Web.
    Because canonicalization is implementation-defined, this change may (or may not; needs research) be safe to ship after Temporal Stage 4, but best to not wait too long.
 
@@ -186,15 +188,13 @@ Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 
 ## Proposed Solution - Details
 
-### 1. Editorial cleanup of identifier-related Abstract Operations
+### 1. DONE - Editorial cleanup of identifier-related terms and Abstract Operations
 
-_Status: PRs submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035) and [tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573). Reviews in progress._
+_Status: Ediotorial PR merged as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035)_
 
-Currently, the Temporal (and pre-Temporal) ECMA-262 and ECMA-402 specs contain several implementation-defined abstract operations dealing with time zone identifiers, as well as several 262 AOs overridden in 402.
-
-Even without normative changes, we can simplify the specs quite a bit.
-In the process, we can reduce the delta required for the proposed normative changes, the delta between ECMA-262 and ECMA-402 specs, and the delta between Temporal and ECMA 262 specs.
-The main changes are adding two new abstract operations, which will enable all other time-zine-identifier-related functionality in ECMA-262, ECMA-402, and Temporal to be built on top as non-implementation-defined AOs.
+A recent PR landed in ECMA-262 refactored the spec text for time zone identifiers.
+One change was a new [Time Zone Identifiers](https://tc39.es/ecma262/#sec-time-zone-identifiers) prose section that defines identifer-related terms and concepts.
+The other change was refactoring time-zone-identifier-related abstract operations, so that other time-zine-identifier-related functionality in ECMA-262, ECMA-402, and Temporal (including the normative chagnes in this proposal) can be built of these without resorting to new non-implementation-defined AOs:
 
 **`AvailableNamedTimeZoneIdentifiers()`** - Returns an implementation-defined List of Records, each composed of:
 
@@ -202,28 +202,26 @@ The main changes are adding two new abstract operations, which will enable all o
 - `[[PrimaryIdentifier]]`: identifier of transitive IANA Link target (following as many Links as necessary to reach a Zone), with the same special-casing of `"UTC"` as in ECMA-402's [CanonicalizeTimeZoneName](https://tc39.es/ecma402/#sec-canonicalizetimezonename).
 
 **`GetAvailableNamedTimeZoneIdentifier(_identifier_)`** - Filters the result of `AvailableNamedTimeZoneIdentifiers` to return the record where `[[Identifier]]` is an ASCII-case-insensitive match for `_identifier_`, or `~empty~` if there's no match.
-This AO will:
+This AO:
 
-- Replace `CanonicalizeTimeZoneName` in [Temporal](https://tc39.es/proposal-temporal/#sec-canonicalizetimezonename) and [ECMA-402](https://tc39.es/ecma402/#sec-canonicalizetimezonename) by using the `[[PrimaryIdentifier]]` of the result.
-- Replace [`IsAvailableTimeZoneName`](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) in Temporal and [`IsValidTimeZoneName`](https://tc39.es/ecma402/#sec-isvalidtimezonename) in ECMA-402, by comparing the result to `~empty~`.
-- Fetch a case-normalized time zone identifier by using the `[[Identifier]]` of the result.
-  This will be used in later parts of this proposal.
+- Replaces `CanonicalizeTimeZoneName` in [Temporal](https://tc39.es/proposal-temporal/#sec-canonicalizetimezonename) and [ECMA-402](https://tc39.es/ecma402/#sec-canonicalizetimezonename) by using the `[[PrimaryIdentifier]]` of the result.
+- Replaces [`IsAvailableTimeZoneName`](https://tc39.es/proposal-temporal/#sec-isavailabletimezonename) in Temporal and [`IsValidTimeZoneName`](https://tc39.es/ecma402/#sec-isvalidtimezonename) in ECMA-402, by comparing the result to `~empty~`.
+- Fetches a case-normalized time zone identifier by using the `[[Identifier]]` of the result.
+  This capability will be used as part of this proposal.
 
-The specification text of this proposal is stacked on top of these editorial changes.
+The specification text of this proposal is stacked on top of these recently-merged editorial changes.
 
-### 2. Clarify spec to prevent more divergence
+### 2. DONE - Clarify spec to prevent more divergence
 
-_Status: PRs submitted as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035) and [tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573). (same PRs as Step 1 above)_
+_Status: Editorial PR merged as [tc39/proposal-temporal#2573](https://github.com/tc39/proposal-temporal/pull/2573)._
 
-Currently, the ECMA-402 spec (and the 402 section of the Temporal spec) tells implementers to use TZDB, but doesn't provide enough detail to differentiate the myriad ways that TZDB data can be built.
-(TZDB's makefile has a number of build options that yield normatively different data file output.)
+The ECMA-402 section of the Temporal spec now includes a new [Use of the Time Zone Database](https://tc39.es/proposal-temporal/#sec-use-of-iana-time-zone-database) section that recommends best practices for building and handling updates to the IANA Time Zone Database.
 
-In this step, we update the spec to provide recommendations for implementers about canonicalization behavior.
-Recommendations are broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
-
-Another goal would be to inhibit further divergence (between implementation, and between implementations and spec) beyond what already exists.
+These recommendations are broad enough to encompass existing implementations in Firefox and V8/WebKit but not any broader than that.
 For example, all ECMAScript implementations seem to avoid use of the the default TZDB build options that perform over-eager canonicalization like `Atlantic/Reykjavik=>Africa/Abidjan`.
 We will recommend that all implementations follow this best practice.
+
+The goal of these changes was to provide a web-reality baseline that further cross-implementation alignment can build on.
 
 ### 3. Fix out-of-date canonicalizations in V8/WebKit
 
@@ -266,6 +264,8 @@ const outofDateLinks = [
 
 ### 4. Prescriptive spec text to reduce divergence between implementations
 
+_Status: At this point it seems unlikely that we'll get this cross-implementer agreement soon. So it's likely that we'll remove this step from the scope of this proposal, and follow up separately in parallel._
+
 This step involves agreement between implementers and TG2 about how canonicalization should work.
 It may require agreeing on (or recommending) which external source of canonicalization (IANA or CLDR) ECMAScript should rely on, and (if IANA) which TZDB build options should be used.
 Making progress here requires input from specifiers and implementers who understand the tradeoffs involved.
@@ -277,6 +277,8 @@ There's useful info in [@anba](https://github.com/anba)'s comments [here](https:
 It will likely be much easier to achieve consensus on this spec text after progress is made on (3) above, because those 13 outdated Links are the largest current difference in canonicalization behavior between Firefox and V8/WebKit.
 
 ### 5. Defer Link-traversing canonicalization
+
+_Status: [Spec text](https://tc39.es/proposal-canonical-tz), [polyfill](./polyfill/README.md), and [tests](https://github.com/tc39/test262/pull/3837) are complete._
 
 This normative change would defer Link traversal to enable a Link identifier to be stored in internal slots of `ZonedDateTime`, `TimeZone`, and  `Intl.DateTimeFormat`, so that it can be returned back to the user.
 
@@ -291,8 +293,7 @@ This change requires the following normative edits:
 - a) Change `GetAvailableNamedTimeZoneIdentifier(id).[[PrimaryIdentifier]]` to `GetAvailableNamedTimeZoneIdentifier(id).[[Identifier]]` in places where user input identifiers are parsed and/or stored.
 - b) Call `GetAvailableNamedTimeZoneIdentifier(id).[[PrimaryIdentifier]]` before using identifiers for purposes that require canonicalization, such as the `TimeZoneEquals` abstract operation.
 
-These changes are described in the spec text of this proposal.
-An proof-of-concept PR of the polyfill changes required for this proposal (stacked on the Temporal polyfill) is here: https://github.com/tc39/proposal-canonical-tz/pull/1
+These changes are described in the [spec text](https://tc39.es/proposal-canonical-tz), [polyfill](./polyfill/README.md), and [tests](https://github.com/tc39/test262/pull/3837) of this proposal.
 
 A few performance-related notes:
 
@@ -302,6 +303,8 @@ A few performance-related notes:
   Implementations could choose to do this for ease of implementation, but they can also save 1-2 bytes per instance by canonicalizing just-in-time via a 2.3KB map of each identifier's index to its corresponding Zone's identifier's index.
 
 ### 6. Add `Temporal.TimeZone.prototype.equals`
+
+_Status: [Spec text](https://tc39.es/proposal-canonical-tz), [polyfill](./polyfill/README.md), and [tests](https://github.com/tc39/test262/pull/3837) are complete._
 
 The final step would expose Temporal's [`TimeZoneEquals`](https://tc39.es/proposal-temporal/#sec-temporal-timezoneequals) to ECMAScript code to enable developers to compare two time zones to see if they resolve to the same Zone.
 
