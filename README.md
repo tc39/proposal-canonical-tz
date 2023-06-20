@@ -138,16 +138,23 @@ zdt.toString();
 
 ## Definitions
 
-- **Identifier** - Time zone name in TZDB (and accepted in ECMAScript).
-  Identifiers are ASCII-only and are case-insensitive.
-  There are currently 594 identifiers (avg length 14.3 chars).
+Additional details related to the terms below can be found at [Time Zone Identifiers](https://tc39.es/ecma262/#sec-time-zone-identifiers) in ECMA-262 and [Use of the IANA Time Zone Database](https://tc39.es/proposal-temporal/#sec-use-of-iana-time-zone-database) in the ECMA-402-amending part of the Temporal specification.
+
+- **Available Named Time Zone Identifier** - Time zone name in TZDB (and accepted in ECMAScript).
+  Available named time zone identifiers are ASCII-only and are case-insensitive.
+  There are currently 594 available named time zone identifiers (avg length 14.3 chars).
   Currently fewer than 5 identifiers are added per year.
-- **Zone** - TZDB term for a collection of rules named by an Identifier (see [How to Read the tz Database](https://data.iana.org/time-zones/tz-how-to.html) and [Theory and pragmatics](https://data.iana.org/time-zones/theory.html)).
+- **Primary Time Zone Identifier** - The preferred identifier for an available named time zone.
+- **Non-primary Time Zone Identifier** - Other identifiers for an available named time zone.
+  An available named time zone has one primary identifer and 0 or more non-primary ones.
+- **Zone** - TZDB term for a collection of rules named by an identifier (see [How to Read the tz Database](https://data.iana.org/time-zones/tz-how-to.html) and [Theory and pragmatics](https://data.iana.org/time-zones/theory.html)).
   There are currently 461 Zones (avg length 14.9 chars).
+  Except rare exceptions like `Etc/GMT`, all Zones in TZDB are primary time zone identifiers in ECMAScript.
 - **Link** - TZDB term for an Identifier that lacks its own Zone record but instead targets another Identifier and uses its rules.
   When a Zone is renamed, a Link from the old name to the new one is added to [`backward`](https://github.com/eggert/tz/blob/main/backward).
   Renaming to update the spelling of a city happens every few years.
   There are currently 133 Links (avg length 12.2 chars).
+  Links in TZDB are generally non-primary time zone identifiers in ECMAScript, but variation in TZDB build options means that some Links in some builds of TZDB are primary time zone identifiers in ECMAScript. 
 - **Case-normalization** - Match user-provided IDs to case in IANA TZDB. Example: `america/los_angeles` ⇨ `America/Los_Angeles`
 - **Canonicalization** - Return the IANA Zone, resolving Links if needed. Example: Europe/Kiev ⇨ Europe/Kyiv
 - **CLDR Canonicalization** - Zone &amp; Link [data](https://github.com/unicode-org/cldr-json/blob/main/cldr-json/cldr-bcp47/bcp47/timezone.json) used by V8 & WebKit (via ICU libraries)
