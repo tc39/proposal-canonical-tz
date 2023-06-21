@@ -35,7 +35,7 @@
       {
         "type": "op",
         "aoid": "ToTemporalTimeZoneIdentifier",
-        "id": "sec-totemporaltimezoneidentifier"
+        "id": "sec-temporal-totemporaltimezoneidentifier"
       },
       {
         "type": "op",
