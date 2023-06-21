@@ -7,10 +7,10 @@
   <emu-note type="editor">
     <p>
       This section lists amendments which must be made to <a href="https://tc39.es/ecma402/">ECMA-402, the ECMAScript® 2024 Internationalization API Specification</a>.
-      Text to be added is marked <ins>like this</ins>, and text to be deleted is marked <del>like this</del>.
     </p>
     <p>
-      This text is based on top of the ECMA-402 spec text from <a href="https://github.com/tc39/proposal-temporal/pull/2573">https://github.com/tc39/proposal-temporal/pull/2573</a>.
+      This text is based on <a href="https://github.com/tc39/proposal-temporal/blob/main/spec/intl.html">https://github.com/tc39/proposal-temporal/blob/main/spec/intl.html</a>, which specifies the changes to ECMA-402 made by the Temporal proposal.
+      Text to be added is marked <ins>like this</ins>, and text to be deleted is marked <del>like this</del>.
     </p>
   </emu-note>
 
@@ -26,9 +26,10 @@
     </emu-note>
 
     <p>
-      New Zone identifiers can be added to the IANA Time Zone Database, for example when one part of a country starts observing Daylight Saving Time differently from other parts, or when a new country declares independence.
-      ECMAScript implementations are recommended to include newly-added identifiers as soon as possible into the results of AvailableNamedTimeZoneIdentifiers.
-      Such prompt action ensures that ECMAScript programs receiving those identifiers from an external source (including the host's operating system) will be able to recognize and calculate using the new time zone.
+      The IANA Time Zone Database is typically updated between five and ten times per year.
+      These updates may add new Zone or Link names, may change Zones to Links, and may change the UTC offsets and transitions associated with any Zone.
+      ECMAScript implementations are recommended to include updates to the IANA Time Zone Database as soon as possible.
+      Such prompt action ensures that ECMAScript programs can accurately perform time-zone-sensitive calculations and can use newly-added available named time zone identifiers supplied by external input or the host environment.
     </p>
 
     <ins class="block">
@@ -37,7 +38,7 @@
       For example, the IANA Time Zone Database's 2022b release added "*Europe/Kyiv*" as a new Zone and demoted "*Europe/Kiev*" to be a Link to the new Zone.
       To reduce disruption from these renaming changes, ECMAScript implementations are encouraged to initially add the new name as a non-primary time zone identifier that resolves to the old primary identifier.
       Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
-      The recommended waiting period is two years (TODO: may change) after the IANA Time Zone Database release containing the changes.
+      The recommended waiting period is two years after the IANA Time Zone Database release containing the changes.
       This is long enough to allow most other systems that ECMAScript programs may interact with to "catch up" with the change so that the new zone is recognized.
       Note that this waiting period should only apply to cases where an existing Zone is replaced by a new Zone name.
       If an existing Zone and Link are swapped, then no waiting period is recommended.
@@ -45,10 +46,8 @@
     </ins>
 
     <p>
-      It is recommended that implementations maintain a fully consistent copy of the IANA Time Zone Database for the lifetime of each agent.
-      If implementations do revise time zone information during the lifetime of an agent, then it is recommended that changes to time zone data, including which identifiers are supported, the primary time zone identifier associated with any identifier, and the UTC offsets and transitions associated with any Zone, can be incorporated into an agent only if they are consistent with results already observed by all ECMAScript code that can reach that agent.
-      For example, it is recommended that a new identifier can be incorporated only if no ECMAScript code has already tried to use it, and it is recommended that replacement of a primary identifier with a Link to a different identifier can only be incorporated only if no ECMAScript code has already resulted in resolving it as primary.
-      The complexity of maintaining such invariants is why it is recommended that implementations maintain a fully consistent copy of the IANA Time Zone Database for the lifetime of each agent.
+      If implementations revise time zone information during the lifetime of an agent, then which identifiers are supported, the primary time zone identifier associated with any identifier, and the UTC offsets and transitions associated with any Zone, must be consistent with results previously observed by that agent.
+      Due to the complexity of supporting this requirement, it is recommended that implementations maintain a fully consistent copy of the IANA Time Zone Database for the lifetime of each agent.
     </p>
   </emu-clause>
 
@@ -61,11 +60,11 @@
     <emu-alg>
       1. Let _zonedDateTime_ be the *this* value.
       1. Perform ? RequireInternalSlot(_zonedDateTime_, [[InitializedTemporalZonedDateTime]]).
-      1. Let _dateTimeFormat_ be ! OrdinaryCreateFromConstructor(%DateTimeFormat%, %DateTimeFormat.protoytpe%, « [[InitializedDateTimeFormat]], [[Locale]], [[Calendar]], [[NumberingSystem]], [[TimeZone]], [[Weekday]], [[Era]], [[Year]], [[Month]], [[Day]], [[DayPeriod]], [[Hour]], [[Minute]], [[Second]], [[FractionalSecondDigits]], [[TimeZoneName]], [[HourCycle]], [[Pattern]], [[BoundFormat]] »).
+      1. Let _dateTimeFormat_ be ! OrdinaryCreateFromConstructor(%DateTimeFormat%, %DateTimeFormat.prototype%, « [[InitializedDateTimeFormat]], [[Locale]], [[Calendar]], [[NumberingSystem]], [[TimeZone]], [[Weekday]], [[Era]], [[Year]], [[Month]], [[Day]], [[DayPeriod]], [[Hour]], [[Minute]], [[Second]], [[FractionalSecondDigits]], [[TimeZoneName]], [[HourCycle]], [[Pattern]], [[BoundFormat]] »).
       1. Let _timeZone_ be ? ToTemporalTimeZoneIdentifier(_zonedDateTime_.[[TimeZone]]).
       1. If IsTimeZoneOffsetString(_timeZone_) is *true*, throw a *RangeError* exception.
       1. Let _timeZoneIdentifierRecord_ be GetAvailableNamedTimeZoneIdentifier(_timeZone_).
-      1. If _timeZoneIdentifierRecord_ is ~empty~, throw a RangeError exception.
+      1. If _timeZoneIdentifierRecord_ is ~empty~, throw a *RangeError* exception.
       1. Set _timeZone_ to _timeZoneIdentifierRecord_.[[<del>PrimaryIdentifier</del><ins>Identifier</ins>]].
       1. Perform ? InitializeDateTimeFormat(_dateTimeFormat_, _locales_, _options_, _timeZone_).
       1. Let _calendar_ be ? ToTemporalCalendarIdentifier(_zonedDateTime_.[[Calendar]]).
