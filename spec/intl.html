@@ -15,15 +15,18 @@
   </emu-note>
 
   <emu-clause id="sup-time-zone-identifiers">
-    <h1>Time Zone Identifiers</h1>
+    <h1>Use of the IANA Time Zone Database</h1>
 
     <emu-note type="editor">
       <p>
-        Only one paragraph should be inserted into this (long) section.
-        The paragraph above and below (which have no changes from the base specification text) are included for context and to help with diffs.
-        The rest of the existing section's text should not be changed by this proposal, and so is not included here.
+        This proposal adds a note to the Temporal proposal's <a href="https://tc39.es/proposal-temporal/#sec-use-of-iana-time-zone-database">Use of the IANA Time Zone Database</a> section, which replaces the current <a href="https://tc39.es/ecma-402/#sec-time-zone-names">Time Zone Names</a> section in ECMA-402.
+      </p>
+      <p>
+        One paragraph of existing text above and below the inserted note is included for context.
       </p>
     </emu-note>
+
+    <p>[...]</p>
 
     <p>
       The IANA Time Zone Database is typically updated between five and ten times per year.
@@ -33,22 +36,30 @@
     </p>
 
     <ins class="block">
-    <p>
-      Although the IANA Time Zone Database maintainers strive for stability, in rare cases identifiers will be renamed.
-      For example, the IANA Time Zone Database's 2022b release added "*Europe/Kyiv*" as a new Zone and demoted "*Europe/Kiev*" to be a Link to the new Zone.
-      To reduce disruption from these renaming changes, ECMAScript implementations are encouraged to initially add the new name as a non-primary time zone identifier that resolves to the old primary identifier.
-      Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
-      The recommended waiting period is two years after the IANA Time Zone Database release containing the changes.
-      This is long enough to allow most other systems that ECMAScript programs may interact with to "catch up" with the change so that the new zone is recognized.
-      Note that this waiting period should only apply to cases where an existing Zone is replaced by a new Zone name.
-      If an existing Zone and Link are swapped, then no waiting period is recommended.
-    </p>
+    <emu-note>
+      <p>
+        Although the IANA Time Zone Database maintainers strive for stability, in rare cases (averaging less than once per year) a Zone may be replaced by a new Zone.
+        For example, in 2022 "*Europe/Kiev*" was deprecated to a Link resolving to a new "*Europe/Kyiv*" Zone.
+      </p>
+      <p>
+        To reduce disruption from renaming changes, ECMAScript implementations are encouraged to initially add the new Zone as a non-primary time zone identifier that resolves to the current primary identifier.
+        Then, after a waiting period, implementations are recommended to promote the new Zone to a primary time zone identifier while simultaneously demoting the deprecated name to non-primary.
+        The recommended waiting period is two years after the IANA Time Zone Database release containing the changes.
+        This delay allows other systems, that ECMAScript programs may interact with, to be updated to recognize the new Zone.
+      </p>
+      <p>
+        A waiting period should only apply when a new Zone is added to replace an existing Zone.
+        If an existing Zone and Link are swapped, then no waiting period is necessary.
+      </p>
+    </emu-note>
     </ins>
 
     <p>
       If implementations revise time zone information during the lifetime of an agent, then which identifiers are supported, the primary time zone identifier associated with any identifier, and the UTC offsets and transitions associated with any Zone, must be consistent with results previously observed by that agent.
       Due to the complexity of supporting this requirement, it is recommended that implementations maintain a fully consistent copy of the IANA Time Zone Database for the lifetime of each agent.
     </p>
+
+    <p>[...]</p>
   </emu-clause>
 
   <emu-clause id="sup-temporal.zoneddatetime.prototype.tolocalestring">
@@ -78,7 +89,17 @@
   <emu-clause id="sec-temporal-initializedatetimeformat" aoid="InitializeDateTimeFormat">
     <h1>InitializeDateTimeFormat ( _dateTimeFormat_, _locales_, _options_ [ , _toLocaleStringTimeZone_ ] )</h1>
 
-    <p>
+      <emu-note type="editor">
+        <p>
+          This text is based on <a href="https://tc39.es/proposal-temporal/#sec-temporal-initializedatetimeformat">the revisions to InitializeDateTimeFormat</a> made by the Temporal proposal, not the <a href="https://tc39.es/ecma402/#sec-initializedatetimeformat">current text</a> in ECMA-402.
+        </p>
+        <p>
+          Only one line is changed and is <del>marked</del> <ins>like this</ins>.
+          The rest of the text has been included for context, but it can be ignored.
+        </p>
+      </emu-note>
+
+      <p>
       The abstract operation InitializeDateTimeFormat accepts the arguments _dateTimeFormat_ (which must be an object), _locales_, and _options_.
       It initializes _dateTimeFormat_ as a DateTimeFormat object.
       If an additional _toLocaleStringTimeZone_ argument is provided (which, if present, must be a canonical time zone name string), the time zone will be overridden and some adjustments will be made to the defaults in order to implement the behaviour of `Temporal.ZonedDateTime.prototype.toLocaleString`.
