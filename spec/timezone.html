@@ -22,14 +22,22 @@
     <dl class="header">
       <dt>description</dt>
       <dd>
-        It returns a String representing the host environment's current time zone, which is either a String representing a UTC offset for which IsTimeZoneOffsetString returns *true*, or a primary time zone identifier.
+        It returns a String representing the host environment's current time zone, which is either a primary time zone identifier or an offset time zone identifier.
       </dd>
     </dl>
+
+    <emu-note type="editor">
+      <p>
+        Updates to this abstract operation overlap with a Temporal PR (<a href="https://github.com/tc39/proposal-temporal/pull/2607">#2607 - Normative: Limit offset time zones to minutes precision</a>) being presented in the July 2023 TC39 meeting.
+        If that PR is approved, SystemTimeZoneIdentifier changes will be removed from this proposal.
+      </p>
+    </emu-note>
 
     <emu-alg>
       1. If the implementation only supports the UTC time zone, return *"UTC"*.
       1. Let _systemTimeZoneString_ be the String representing the host environment's current time zone, either a primary time zone identifier or an offset time zone identifier.
-      1. <ins>If IsTimeZoneOffsetString(_systemTimeZoneString_) is *true*, return CanonicalizeTimeZoneOffsetString(_systemTimeZoneString_)</ins>.
+      1. <ins>Let _offsetNanoseconds_ be ! ParseTimeZoneIdentifier(_systemTimeZoneString_).</ins>
+      1. <ins>If _offsetNanoseconds_ is not ~empty~, return FormatOffsetTimeZoneIdentifier(_offsetNanoseconds_, ~separated~).</ins>
       1. Return _systemTimeZoneString_.
     </emu-alg>
 
@@ -48,7 +56,10 @@
         1. If NewTarget is *undefined*, then
           1. Throw a *TypeError* exception.
         1. Set _identifier_ to ? ToString(_identifier_).
-        1. If IsTimeZoneOffsetString(_identifier_) is *false*, then
+        1. Let _parseResult_ be ? ParseTimeZoneIdentifier(_identifier_).
+        1. If _parseResult_.[[OffsetNanoseconds]] is not ~empty~, then
+          1. Set _identifier_ to FormatOffsetTimeZoneIdentifier(_parseResult_.[[OffsetNanoseconds]], ~separated~).
+        1. Else,
           1. Let _timeZoneIdentifierRecord_ be GetAvailableNamedTimeZoneIdentifier(_identifier_).
           1. If _timeZoneIdentifierRecord_ is ~empty~, throw a *RangeError* exception.
           1. Set _identifier_ to _timeZoneIdentifierRecord_.[[<del>PrimaryIdentifier</del><ins>Identifier</ins>]].
@@ -87,10 +98,13 @@
         <emu-alg>
           1. If _newTarget_ is not present, set _newTarget_ to %Temporal.TimeZone%.
           1. Let _object_ be ? OrdinaryCreateFromConstructor(_newTarget_, *"%Temporal.TimeZone.prototype%"*, « [[InitializedTemporalTimeZone]], [[Identifier]], [[OffsetNanoseconds]] »).
-          1. If IsTimeZoneOffsetString(_identifier_) is *true*, then
+          1. Assert: _identifier_ is an available named time zone identifier or an offset time zone identifier.
+          1. Let _parseResult_ be ! ParseTimeZoneIdentifier(_identifier_).
+          1. If _parseResult_.[[OffsetNanoseconds]] is not ~empty~, then
             1. Set _object_.[[Identifier]] to ~empty~.
-            1. Set _object_.[[OffsetNanoseconds]] to ParseTimeZoneOffsetString(_identifier_).
+            1. Set _object_.[[OffsetNanoseconds]] to _parseResult_.[[OffsetNanoseconds]].
           1. Else,
+            1. Assert: _parseResult_.[[Name]] is not ~empty~.
             1. Assert: GetAvailableNamedTimeZoneIdentifier(_identifier_).[[<del>PrimaryIdentifier</del><ins>Identifier</ins>]] is _identifier_.
             1. Set _object_.[[Identifier]] to _identifier_.
             1. Set _object_.[[OffsetNanoseconds]] to ~empty~.
@@ -118,12 +132,15 @@
           1. Let _parseResult_ be ? ParseTemporalTimeZoneString(_identifier_).
           1. If _parseResult_.[[Name]] is not *undefined*, then
             1. Let _name_ be _parseResult_.[[Name]].
-            1. If IsTimeZoneOffsetString(_name_) is *true*, return CanonicalizeTimeZoneOffsetString(_name_).
+            1. Let _offsetNanoseconds_ be ? ParseTimeZoneIdentifier(_name_).[[OffsetNanoseconds]].
+            1. If _offsetNanoseconds_ is not ~empty~, return FormatOffsetTimeZoneIdentifier(_offsetNanoseconds_, ~separated~).
             1. Let _timeZoneIdentifierRecord_ be GetAvailableNamedTimeZoneIdentifier(_name_).
             1. If _timeZoneIdentifierRecord_ is ~empty~, throw a *RangeError* exception.
             1. Return _timeZoneIdentifierRecord_.[[<del>PrimaryIdentifier</del><ins>Identifier</ins>]].
           1. If _parseResult_.[[Z]] is *true*, return *"UTC"*.
-          1. Return CanonicalizeTimeZoneOffsetString(_parseResult_.[[OffsetString]]).
+          1. Let _offsetParseResult_ be ! ParseDateTimeUTCOffset(_parseResult_.[[OffsetString]]).
+          1. If _offsetParseResult_.[[HasSubMinutePrecision]] is *true*, throw a *RangeError* exception.
+          1. Return FormatOffsetTimeZoneIdentifier(_offsetParseResult_.[[OffsetNanoseconds]], ~separated~).
         </emu-alg>
       </emu-clause>
 
@@ -136,13 +153,18 @@
         </h1>
         <dl class="header">
           <dt>description</dt>
-          <dd>It returns *true* if its arguments represent <del>time zones using the same identifier</del><ins>the same time zones, either because their identifiers are equal or because those identifiers resolve to the same primary time zone identifier</ins>.</dd>
+          <dd>It returns *true* if its arguments represent <del>time zones using the same identifier</del><ins>the same time zones, either because their identifiers are equal or because those identifiers resolve to the same primary time zone identifier or UTC offset</ins>.</dd>
         </dl>
         <emu-alg>
           1. If _one_ and _two_ are the same Object value, return *true*.
           1. Let _timeZoneOne_ be ? ToTemporalTimeZoneIdentifier(_one_).
           1. Let _timeZoneTwo_ be ? ToTemporalTimeZoneIdentifier(_two_).
           1. If _timeZoneOne_ is _timeZoneTwo_, return *true*.
+          1. <ins>Let _offsetNanosecondsOne_ be ? ParseTimeZoneIdentifier(_timeZoneOne_).[[OffsetNanoseconds]].</ins>
+          1. <ins>Let _offsetNanosecondsTwo_ be ? ParseTimeZoneIdentifier(_timeZoneTwo_).[[OffsetNanoseconds]].</ins>
+          1. <ins>If _offsetNanosecondsOne_ is not ~empty~ or _offsetNanosecondsTwo_ is not ~empty~, then</ins>
+            1. <ins>If _offsetNanosecondsOne_ is not ~empty~ and _offsetNanosecondsTwo_ is not ~empty~ and _offsetNanosecondsOne_ = _offsetNanosecondsTwo_, return *true*.</ins>
+            1. <ins>Return *false*.</ins>
           1. <ins>Let _recordOne_ be GetAvailableNamedTimeZoneIdentifier(_timeZoneOne_).</ins>
           1. <ins>Let _recordTwo_ be GetAvailableNamedTimeZoneIdentifier(_timeZoneTwo_).</ins>
           1. <ins>If _recordOne_ is not ~empty~ and _recordTwo_ is not ~empty~ and _recordOne_.[[PrimaryIdentifier]] is _recordTwo_.[[PrimaryIdentifier]], return *true*.</ins>
