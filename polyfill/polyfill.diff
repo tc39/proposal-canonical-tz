@@ -9,7 +9,7 @@ index 1c6831c7..73008e46 100644
 +	url = https://github.com/justingrant/test262
 +	branch = proposal-canonical-tz-tests
 diff --git a/polyfill/index.d.ts b/polyfill/index.d.ts
-index 244067cb..d4b6f741 100644
+index 784677c9..b11758ea 100644
 --- a/polyfill/index.d.ts
 +++ b/polyfill/index.d.ts
 @@ -1138,6 +1138,7 @@ export namespace Temporal {
@@ -21,11 +21,11 @@ index 244067cb..d4b6f741 100644
      getOffsetStringFor(instant: Temporal.Instant | string): string;
      getPlainDateTimeFor(instant: Temporal.Instant | string, calendar?: CalendarLike): Temporal.PlainDateTime;
 diff --git a/polyfill/lib/ecmascript.mjs b/polyfill/lib/ecmascript.mjs
-index 25d54d96..8359e4a0 100644
+index e7f04c0b..53d5ed81 100644
 --- a/polyfill/lib/ecmascript.mjs
 +++ b/polyfill/lib/ecmascript.mjs
-@@ -371,7 +371,7 @@ export function ParseTemporalTimeZone(stringIdent) {
-     if (IsTimeZoneOffsetString(tzName)) return CanonicalizeTimeZoneOffsetString(tzName);
+@@ -2101,7 +2101,7 @@ export function ToTemporalTimeZoneSlotValue(temporalTimeZoneLike) {
+ 
      const record = GetAvailableNamedTimeZoneIdentifier(tzName);
      if (!record) throw new RangeError(`Unrecognized time zone ${tzName}`);
 -    return record.primaryIdentifier;
@@ -33,15 +33,16 @@ index 25d54d96..8359e4a0 100644
    }
    if (z) return 'UTC';
    // if !tzName && !z then offset must be present
-@@ -2119,7 +2119,16 @@ export function TimeZoneEquals(one, two) {
+@@ -2126,7 +2126,17 @@ export function TimeZoneEquals(one, two) {
    if (one === two) return true;
    const tz1 = ToTemporalTimeZoneIdentifier(one);
    const tz2 = ToTemporalTimeZoneIdentifier(two);
 -  return tz1 === tz2;
 +  if (tz1 === tz2) return true;
-+  if (IsTimeZoneOffsetString(tz1)) {
-+    if (!IsTimeZoneOffsetString(tz2)) return false;
-+    return CanonicalizeTimeZoneOffsetString(tz1) === CanonicalizeTimeZoneOffsetString(tz2);
++  const offsetNanoseconds1 = ParseTimeZoneIdentifier(tz1).offsetNanoseconds;
++  const offsetNanoseconds2 = ParseTimeZoneIdentifier(tz2).offsetNanoseconds;
++  if (offsetNanoseconds1 !== undefined || offsetNanoseconds2 !== undefined) {
++    return offsetNanoseconds1 === offsetNanoseconds2;
 +  }
 +  const idRecord1 = GetAvailableNamedTimeZoneIdentifier(tz1);
 +  if (!idRecord1) return false;
@@ -52,7 +53,7 @@ index 25d54d96..8359e4a0 100644
  
  export function TemporalDateTimeToDate(dateTime) {
 diff --git a/polyfill/lib/intl.mjs b/polyfill/lib/intl.mjs
-index e3c6a403..4870d3d1 100644
+index 9d78ee43..d86269a5 100644
 --- a/polyfill/lib/intl.mjs
 +++ b/polyfill/lib/intl.mjs
 @@ -139,7 +139,7 @@ Object.defineProperty(DateTimeFormat, 'prototype', {
@@ -65,10 +66,10 @@ index e3c6a403..4870d3d1 100644
  }
  
 diff --git a/polyfill/lib/timezone.mjs b/polyfill/lib/timezone.mjs
-index 9796e980..eb957267 100644
+index 7c6c8a2e..857385ad 100644
 --- a/polyfill/lib/timezone.mjs
 +++ b/polyfill/lib/timezone.mjs
-@@ -32,7 +32,7 @@ export class TimeZone {
+@@ -33,7 +33,7 @@ export class TimeZone {
      } else {
        const record = ES.GetAvailableNamedTimeZoneIdentifier(stringIdentifier);
        if (!record) throw new RangeError(`Invalid time zone identifier: ${stringIdentifier}`);
@@ -77,7 +78,7 @@ index 9796e980..eb957267 100644
      }
      CreateSlots(this);
      SetSlot(this, TIMEZONE_ID, stringIdentifier);
-@@ -50,6 +50,11 @@ export class TimeZone {
+@@ -51,6 +51,11 @@ export class TimeZone {
      if (!ES.IsTemporalTimeZone(this)) throw new TypeError('invalid receiver');
      return GetSlot(this, TIMEZONE_ID);
    }
@@ -90,7 +91,7 @@ index 9796e980..eb957267 100644
      if (!ES.IsTemporalTimeZone(this)) throw new TypeError('invalid receiver');
      instant = ES.ToTemporalInstant(instant);
 diff --git a/polyfill/lib/zoneddatetime.mjs b/polyfill/lib/zoneddatetime.mjs
-index 1a593c7f..06de9d5f 100644
+index cbd4f8c8..ed1a4143 100644
 --- a/polyfill/lib/zoneddatetime.mjs
 +++ b/polyfill/lib/zoneddatetime.mjs
 @@ -478,7 +478,7 @@ export class ZonedDateTime {
@@ -103,9 +104,9 @@ index 1a593c7f..06de9d5f 100644
  
      const formatter = new DateTimeFormat(locales, optionsCopy);
 diff --git a/polyfill/test262 b/polyfill/test262
-index 3e858ef0..041e65e3 160000
+index c5b24c64..e7d9edfe 160000
 --- a/polyfill/test262
 +++ b/polyfill/test262
 @@ -1 +1 @@
--Subproject commit 3e858ef02d2eda1e1e7eeff89ad7deeaf99d2766
-+Subproject commit 041e65e336e35f1989ec5f0fcf8b2ac745837ab0
+-Subproject commit c5b24c64c3c27544f15e1c18ef274924cff1e32c
++Subproject commit e7d9edfe3866bac9eb4be01619b99748cc0209b2

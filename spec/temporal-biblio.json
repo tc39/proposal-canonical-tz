@@ -9,13 +9,28 @@
       },
       {
         "type": "op",
-        "aoid": "CanonicalizeTimeZoneOffsetString",
-        "id": "sec-temporal-canonicalizetimezoneoffsetstring"
+        "aoid": "IsOffsetTimeZoneIdentifier",
+        "id": "sec-temporal-isoffsettimezoneidentifier"
+      },
+      {
+        "type": "op",
+        "aoid": "FormatOffsetTimeZoneIdentifier",
+        "id": "sec-temporal-formatoffsettimezoneidentifier"
+      },
+      {
+        "type": "op",
+        "aoid": "ParseDateTimeUTCOffset",
+        "id": "sec-temporal-parsedatetimeutcoffset"
+      },
+      {
+        "type": "op",
+        "aoid": "ParseTimeZoneIdentifier",
+        "id": "sec-parsetimezoneidentifier"
       },
       {
         "type": "op",
         "aoid": "ObjectImplementsTemporalTimeZoneProtocol",
-        "id": "sec-objectimplementstemporaltimezoneprotocol"
+        "id": "sec-temporal-objectimplementstemporaltimezoneprotocol"
       },
       {
         "type": "op",
@@ -30,12 +45,12 @@
       {
         "type": "op",
         "aoid": "ToTemporalCalendarIdentifier",
-        "id": "sec-totemporalcalendaridentifier"
+        "id": "sec-temporal-totemporalcalendaridentifier"
       },
       {
         "type": "op",
         "aoid": "CreateTemporalInstant",
-        "id": "sec-createtemporalinstant"
+        "id": "sec-temporal-createtemporalinstant"
       },
       {
         "type": "op",
