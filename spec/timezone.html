@@ -13,36 +13,9 @@
       Text to be added is marked <ins>like this</ins>, and text to be deleted is marked <del>like this</del>.
     </p>
     <p>
-      The changes below are limited to the SystemTimeZoneIdentifier abstract operation, the %Temporal.TimeZone% built-in object, and the abstract operations related to that object.
+      The changes below are limited to the %Temporal.TimeZone% built-in object and the abstract operations related to that object.
     </p>
   </emu-note>
-
-  <emu-clause id="sec-systemtimezoneidentifier" oldids="sec-defaulttimezone" type="implementation-defined abstract operation">
-    <h1>SystemTimeZoneIdentifier ( ): a String</h1>
-    <dl class="header">
-      <dt>description</dt>
-      <dd>
-        It returns a String representing the host environment's current time zone, which is either a primary time zone identifier or an offset time zone identifier.
-      </dd>
-    </dl>
-
-    <emu-note type="editor">
-      <p>
-        Updates to this abstract operation overlap with a Temporal PR (<a href="https://github.com/tc39/proposal-temporal/pull/2607">#2607 - Normative: Limit offset time zones to minutes precision</a>) being presented in the July 2023 TC39 meeting.
-        If that PR is approved, SystemTimeZoneIdentifier changes will be removed from this proposal.
-      </p>
-    </emu-note>
-
-    <emu-alg>
-      1. If the implementation only supports the UTC time zone, return *"UTC"*.
-      1. Let _systemTimeZoneString_ be the String representing the host environment's current time zone, either a primary time zone identifier or an offset time zone identifier.
-      1. <ins>Let _offsetNanoseconds_ be ! ParseTimeZoneIdentifier(_systemTimeZoneString_).</ins>
-      1. <ins>If _offsetNanoseconds_ is not ~empty~, return FormatOffsetTimeZoneIdentifier(_offsetNanoseconds_, ~separated~).</ins>
-      1. Return _systemTimeZoneString_.
-    </emu-alg>
-
-    <p>[...]</p>
-  </emu-clause>
 
   <emu-clause id="sec-temporal-timezone-objects">
     <h1>Temporal.TimeZone Objects</h1>
