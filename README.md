@@ -5,10 +5,16 @@ This proposal improves developer experience when the canonical identifier of a t
 
 ## Status
 
-This proposal is currently [Stage 2](https://github.com/tc39/proposals/tree/main#stage-2) following the [TC39 process](https://tc39.es/process-document/).
+This proposal is currently [Stage 3](https://github.com/tc39/proposals/tree/main#stage-3) following the [TC39 process](https://tc39.es/process-document/).
 
-This proposal's champions are planning to ask for Stage 3 at the upcoming TC39 meeting in July 2023.
-Stage 3 reviewers are: Philip Chimento ([@ptomato](https://github.com/ptomato)), Daniel Minor ([@dminor](https://github.com/dminor)), and Jordan Harband ([@ljharb](https://github.com/ljharb)).
+This proposal reached Stage 3 at the July 2023 TC39 meeting.
+Stage 3 reviewers were: Philip Chimento ([@ptomato](https://github.com/ptomato)), Daniel Minor ([@dminor](https://github.com/dminor)), and Jordan Harband ([@ljharb](https://github.com/ljharb)).
+
+It was agreed at that meeting that this proposal should be merged into the [Temporal proposal](https://github.com/tc39/proposal-temporal), which is also at Stage 3.
+This merger will happen via a normative PR into the Temporal repo, which this proposal's champions will file soon.
+After that PR lands, unresolved issues in this repo will be migrated to the [ECMA-402 repo](https://github.com/tc39/ecma402) and may be addressed via later normative PRs to ECMA-402.
+
+Here are [Slides](https://docs.google.com/presentation/d/1MVBKAB8U16ynSHmO6Mkt26hT5U-28OjyG9-L-GFdikE) for the July 2023 TC39 plenary meeting where this proposal advanced to Stage 3.
 
 Here are [Slides](https://docs.google.com/presentation/d/13vW8JxkbzyzGubT5ZkqUIxtpOQGNSUlguVwgcrbitog/) for the May 2023 TC39 plenary meeting where this proposal advanced to Stage 2.
 
