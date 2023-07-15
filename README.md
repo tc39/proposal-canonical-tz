@@ -152,7 +152,7 @@ Additional details related to the terms below can be found at [Time Zone Identif
   Currently fewer than 5 identifiers are added per year.
 - **Primary Time Zone Identifier** - The preferred identifier for an available named time zone.
 - **Non-primary Time Zone Identifier** - Other identifiers for an available named time zone.
-  An available named time zone has one primary identifer and 0 or more non-primary ones.
+  An available named time zone has one primary identifier and 0 or more non-primary ones.
 - **Zone** - TZDB term for a collection of rules named by an identifier (see [How to Read the tz Database](https://data.iana.org/time-zones/tz-how-to.html) and [Theory and pragmatics](https://data.iana.org/time-zones/theory.html)).
   There are currently 461 Zones (avg length 14.9 chars).
   Except rare exceptions like `Etc/GMT`, all Zones in TZDB are primary time zone identifiers in ECMAScript.
@@ -203,11 +203,11 @@ Temporal.TimeZone.from('Asia/Calcutta').equals('Asia/Kolkata');
 
 ### 1. DONE - Editorial cleanup of identifier-related terms and Abstract Operations
 
-_Status: Ediotorial PR merged as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035)_
+_Status: Editorial PR merged as [tc39/ecma262#3035](https://github.com/tc39/ecma262/pull/3035)_
 
 A recent PR landed in ECMA-262 refactored the spec text for time zone identifiers.
-One change was a new [Time Zone Identifiers](https://tc39.es/ecma262/#sec-time-zone-identifiers) prose section that defines identifer-related terms and concepts.
-The other change was refactoring time-zone-identifier-related abstract operations, so that other time-zine-identifier-related functionality in ECMA-262, ECMA-402, and Temporal (including the normative chagnes in this proposal) can be built of these without resorting to new non-implementation-defined AOs:
+One change was a new [Time Zone Identifiers](https://tc39.es/ecma262/#sec-time-zone-identifiers) prose section that defines identifier-related terms and concepts.
+The other change was refactoring time-zone-identifier-related abstract operations, so that other time-zine-identifier-related functionality in ECMA-262, ECMA-402, and Temporal (including the normative changes in this proposal) can be built of these without resorting to new non-implementation-defined AOs:
 
 **`AvailableNamedTimeZoneIdentifiers()`** - Returns an implementation-defined List of Records, each composed of:
 
